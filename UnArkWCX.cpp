@@ -321,7 +321,10 @@ EXTERN_C UNARKWCX_API int WINAPI CloseArchive( HANDLE hArcData )
 	LM_TRACE(( L"[CloseArchive]" ));
 
 	if( hArcData != NULL )
+	{
+		((CArkInfo*)hArcData)->getArk()->Close();
 		delete (CArkInfo *)(hArcData);
+	}
 
 	return 0;
 }
