@@ -38,13 +38,17 @@
 #endif
 
 #ifndef _WIN32
-#	if defined(__x86_64__) || defined(__ia64__) || defined(_M_AMD64) || defined(_M_IA64) || defined(_WIN64) || defined(__alpha__) || defined(__s390__)
-#		define ARK_DLL_FILE_NAME	"./ark64.so"
+#	ifdef __APPLE__
+#		define ARK_DLL_FILE_NAME	"./ark64.dylib"
 #	else
-#		define ARK_DLL_FILE_NAME	"./ark32.so"
-#	endif
+#		if defined(__x86_64__) || defined(__ia64__) || defined(_M_AMD64) || defined(_M_IA64) || defined(_WIN64) || defined(__alpha__) || defined(__s390__)
+#			define ARK_DLL_FILE_NAME	"./ark64.so"
+#		else
+#			define ARK_DLL_FILE_NAME	"./ark32.so"
+#		endif
+#	endif // __APPLE__
 #	define ARK_DLL_RELEASE_FILE_NAME	ARK_DLL_FILE_NAME
-#endif
+#endif	// _WIN32
 
 
 #define ARK_EXPORTED_FUNCTION_NAME				"CreateArk"
@@ -159,7 +163,7 @@ public :
 
 		return ARKERR_NOERR;
 	}
-#endif	//
+#endif	// not _ARK_USE_AS_LIB
 
 	IArkCompressor* CreateCompressor()
 	{
@@ -193,7 +197,7 @@ public :
 	}
 #endif
 
-	BOOL	IsCreated()
+	BOOL32	IsCreated()
 	{
 		return m_pArk ? TRUE : FALSE;
 	}
@@ -216,20 +220,20 @@ public :				// IArk
 
 #ifndef _WIN32
 	// posix 용 std::string 인터페이스
-	ARKMETHOD(BOOL) Open(std::string name, std::string pass){ return Open(name.c_str(), pass.c_str()); }
-	ARKMETHOD(BOOL) Open(std::string name, const char* pass){ return Open(name.c_str(), pass); }
-	ARKMETHOD(BOOL)	ExtractOneTo(int index,std::string dest){ return ExtractOneTo(index, dest.c_str()); };
-	ARKMETHOD(BOOL)	ExtractAllTo(std::string dest)			{ return ExtractAllTo(dest.c_str()); };
-	ARKMETHOD(BOOL)	ExtractMultiFileTo(std::string dest)	{ return ExtractMultiFileTo(dest.c_str()); }
+	ARKMETHOD(BOOL32)	Open(std::string name, std::string pass){ return Open(name.c_str(), pass.c_str()); }
+	ARKMETHOD(BOOL32)	Open(std::string name, const char* pass){ return Open(name.c_str(), pass); }
+	ARKMETHOD(BOOL32)	ExtractOneTo(int index,std::string dest){ return ExtractOneTo(index, dest.c_str()); };
+	ARKMETHOD(BOOL32)	ExtractAllTo(std::string dest)			{ return ExtractAllTo(dest.c_str()); };
+	ARKMETHOD(BOOL32)	ExtractMultiFileTo(std::string dest)	{ return ExtractMultiFileTo(dest.c_str()); }
 	ARKMETHOD(ARK_FF)	CheckFormat(std::string name) const	{ return CheckFormat(name.c_str()); }
 #endif
 
 
-	ARKMETHOD(BOOL)  			Open(LPCSTR  szFilePathName, LPCSTR szPassword=NULL)
+	ARKMETHOD(BOOL32)  			Open(LPCSTR  szFilePathName, LPCSTR szPassword=NULL)
 	{
 		return m_pArk ? m_pArk->Open(szFilePathName, szPassword) : FALSE;
 	}
-	ARKMETHOD(BOOL)  			Open(LPCWSTR szFilePathName, LPCWSTR szPassword=NULL)
+	ARKMETHOD(BOOL32)  			Open(LPCWSTR szFilePathName, LPCWSTR szPassword=NULL)
 	{
 		return m_pArk ? m_pArk->Open(szFilePathName, szPassword) : FALSE;
 	}
@@ -239,7 +243,7 @@ public :				// IArk
 		if(m_pArk) m_pArk->Close();
 	}
 
-	ARKMETHOD(BOOL)				TestArchive()
+	ARKMETHOD(BOOL32)			TestArchive()
 	{
 		return m_pArk ? m_pArk->TestArchive() : FALSE;
 	}
@@ -276,68 +280,68 @@ public :				// IArk
 		return m_pArk ? m_pArk->GetFileItem(index) : NULL;
 	}
 
-	ARKMETHOD(ARK_FF)				GetFileFormat() const
+	ARKMETHOD(ARK_FF)			GetFileFormat() const
 	{
 		return m_pArk ? m_pArk->GetFileFormat() : ARK_FF_UNKNOWN;
 	}
 
-	ARKMETHOD(BOOL)				IsBrokenArchive() const
+	ARKMETHOD(BOOL32)			IsBrokenArchive() const
 	{
 		return m_pArk ? m_pArk->IsBrokenArchive() : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				IsEncryptedArchive() const
+	ARKMETHOD(BOOL32)			IsEncryptedArchive() const
 	{
 		return m_pArk ? m_pArk->IsEncryptedArchive() : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				IsSolidArchive() const
+	ARKMETHOD(BOOL32)			IsSolidArchive() const
 	{
 		return m_pArk ? m_pArk->IsSolidArchive() : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				IsOpened() const
+	ARKMETHOD(BOOL32)			IsOpened() const
 	{
 		return m_pArk ? m_pArk->IsOpened() : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				ExtractAllTo(LPCSTR szDestPath)
+	ARKMETHOD(BOOL32)			ExtractAllTo(LPCSTR szDestPath)
 	{
 		return m_pArk ? m_pArk->ExtractAllTo(szDestPath) : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				ExtractAllTo(LPCWSTR szDestPath)
+	ARKMETHOD(BOOL32)			ExtractAllTo(LPCWSTR szDestPath)
 	{
 		return m_pArk ? m_pArk->ExtractAllTo(szDestPath) : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				ExtractAllTo(IArkSimpleOutStream* pOutStream)
+	ARKMETHOD(BOOL32)			ExtractAllTo(IArkSimpleOutStream* pOutStream)
 	{
 		return m_pArk ? m_pArk->ExtractAllTo(pOutStream) : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				ExtractOneTo(int index, LPCSTR szDestPath)
+	ARKMETHOD(BOOL32)			ExtractOneTo(int index, LPCSTR szDestPath)
 	{
 		return m_pArk ? m_pArk->ExtractOneTo(index, szDestPath) : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				ExtractOneTo(int index, LPCWSTR szDestPath)
+	ARKMETHOD(BOOL32)			ExtractOneTo(int index, LPCWSTR szDestPath)
 	{
 		return m_pArk ? m_pArk->ExtractOneTo(index, szDestPath) : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				ExtractOneTo(int index, IArkSimpleOutStream* pOutStream)
+	ARKMETHOD(BOOL32)			ExtractOneTo(int index, IArkSimpleOutStream* pOutStream)
 	{
 		return m_pArk ? m_pArk->ExtractOneTo(index, pOutStream) : FALSE;
 	}
 
-	ARKMETHOD(BOOL)				ExtractOneAs(int index, LPCWSTR filePathName, WCHAR resultPathName[ARK_MAX_PATH])
+	ARKMETHOD(BOOL32)			ExtractOneAs(int index, LPCWSTR filePathName, WCHAR resultPathName[ARK_MAX_PATH])
 	{
 		return m_pArk ? m_pArk->ExtractOneAs(index, filePathName, resultPathName) : FALSE;
 	}
 
 
-	ARKMETHOD(BOOL)				AddIndex2ExtractList(int nIndex)
+	ARKMETHOD(BOOL32)			AddIndex2ExtractList(int nIndex)
 	{
 		return m_pArk ? m_pArk->AddIndex2ExtractList(nIndex) : FALSE;
 	}
@@ -352,21 +356,21 @@ public :				// IArk
 		return m_pArk ? m_pArk->GetExtractListCount() : 0;
 	}
 
-	ARKMETHOD(BOOL)				ExtractMultiFileTo(LPCSTR szDestPath)
+	ARKMETHOD(BOOL32)			ExtractMultiFileTo(LPCSTR szDestPath)
 	{
 		return m_pArk ? m_pArk->ExtractMultiFileTo(szDestPath) : FALSE;
 	}
-	ARKMETHOD(BOOL)				ExtractMultiFileTo(LPCWSTR szDestPath, LPCWSTR szPath2Remove=NULL)
+	ARKMETHOD(BOOL32)			ExtractMultiFileTo(LPCWSTR szDestPath, LPCWSTR szPath2Remove=NULL)
 	{
 		return m_pArk ? m_pArk->ExtractMultiFileTo(szDestPath, szPath2Remove) : FALSE;
 	}
-	ARKMETHOD(BOOL)				ExtractMultiFileTo(IArkSimpleOutStream* pOutStream)
+	ARKMETHOD(BOOL32)			ExtractMultiFileTo(IArkSimpleOutStream* pOutStream)
 	{
 		return m_pArk ? m_pArk->ExtractMultiFileTo(pOutStream) : FALSE;
 	}
 
 
-	ARKMETHOD(BOOL)				SetEvent(IArkEvent* pProgress)
+	ARKMETHOD(BOOL32)			SetEvent(IArkEvent* pProgress)
 	{
 		return m_pArk ? m_pArk->SetEvent(pProgress) : FALSE;
 	}
@@ -414,7 +418,7 @@ public :				// IArk
 	{
 		return m_pArk ? m_pArk->GetFilePathName() : NULL;
 	}
-	ARKMETHOD(int)				FindIndex(LPCWSTR szFileNameW, LPCSTR szFileNameA, BOOL bCaseSensitive) const
+	ARKMETHOD(int)				FindIndex(LPCWSTR szFileNameW, LPCSTR szFileNameA, BOOL32 bCaseSensitive) const
 	{
 		return m_pArk ? m_pArk->FindIndex(szFileNameW, szFileNameA, bCaseSensitive) : -1;
 	}
@@ -427,6 +431,16 @@ public :				// IArk
 	ARKMETHOD(ARK_MULTIVOL_STYLE) GetMultivolStyle() const
 	{
 		return m_pArk ?m_pArk->GetMultivolStyle() : ARK_MULTIVOL_STYLE_NONE;
+	}
+
+	ARKMETHOD(BOOL32)			DetectCurrentArchivesCodepage(SArkDetectCodepage& dcp) const
+	{
+		return m_pArk ?m_pArk->DetectCurrentArchivesCodepage(dcp) : FALSE;
+	}
+
+	ARKMETHOD(BOOL32)			ChangeCurrentArchivesCodepage(int codePage)
+	{
+		return m_pArk ?m_pArk->ChangeCurrentArchivesCodepage(codePage) : FALSE;
 	}
 
 	//////////////////////////
@@ -451,14 +465,18 @@ public :				// IArk
 		if(m_pArk) m_pArk->_SetUserKey(key);
 	}
 
-	ARKMETHOD(UINT32)  				_CheckCRC32(LPCWSTR filePath)
+	ARKMETHOD(UINT32)  			_CheckCRC32(LPCWSTR filePath)
 	{
 		return  m_pArk ? m_pArk->_CheckCRC32(filePath) : 0;
 	}
 
-	ARKMETHOD(void*)				_GetExtractor()
+	ARKMETHOD(void*)			_GetExtractor()
 	{
 		return  m_pArk ? m_pArk->_GetExtractor(): NULL;
+	}
+	ARKMETHOD(void*)			_GetInStream()
+	{
+		return  m_pArk ? m_pArk->_GetInStream(): NULL;
 	}
 
 	ARKMETHOD(void)				_Test()
@@ -466,13 +484,8 @@ public :				// IArk
 		if(m_pArk) m_pArk->_Test();
 	}
 
-	ARKMETHOD(BOOL)				_DisableFile(int index)
-	{
-		return m_pArk ?m_pArk->_DisableFile(index) : FALSE;
-	}
-
 	// for c++ builder only
-	ARKMETHOD(BOOL)  			_OpenW(LPCWSTR szFilePathName, LPCWSTR szPassword=NULL)
+	ARKMETHOD(BOOL32)  			_OpenW(LPCWSTR szFilePathName, LPCWSTR szPassword=NULL)
 	{
 		return m_pArk ? m_pArk->_OpenW(szFilePathName, szPassword) : FALSE;
 	}
@@ -485,15 +498,15 @@ public :				// IArk
 	{
 		if(m_pArk) m_pArk->_SetPasswordW(password);
 	}
-	ARKMETHOD(BOOL)				_ExtractAllToW(LPCWSTR folderPath)
+	ARKMETHOD(BOOL32)			_ExtractAllToW(LPCWSTR folderPath)
 	{
 		return m_pArk ? m_pArk->_ExtractAllToW(folderPath) : FALSE;
 	}
-	ARKMETHOD(BOOL)				_ExtractOneToW(int index, LPCWSTR folderPath)
+	ARKMETHOD(BOOL32)			_ExtractOneToW(int index, LPCWSTR folderPath)
 	{
 		return m_pArk ? m_pArk->_ExtractOneToW(index, folderPath) : FALSE;
 	}
-	ARKMETHOD(BOOL)				_ExtractMultiFileToW(LPCWSTR szDestPath, LPCWSTR szPath2Remove=NULL)
+	ARKMETHOD(BOOL32)			_ExtractMultiFileToW(LPCWSTR szDestPath, LPCWSTR szPath2Remove=NULL)
 	{
 		return m_pArk ? m_pArk->_ExtractMultiFileToW(szDestPath, szPath2Remove) : FALSE;
 	}

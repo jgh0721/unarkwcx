@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// 
-///                                      Ark Library 3
+///                                      Ark Library 5
 /// 
 /// ※ 만일 컴파일 오류등으로 인해서 이 파일을 수정하여야 하는 경우가 발생할 경우 
 ///    관련 내용을 꼭 알려주시기 바랍니다. 
@@ -10,7 +10,7 @@
 /// @author   parkkh
 /// @date     Tuesday, December 22, 2009  9:22:23 AM
 /// 
-/// Copyright(C) 2008-2011 Bandisoft, All rights reserved.
+/// Copyright(C) 2008-2012 Bandisoft, All rights reserved.
 /// 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -19,7 +19,7 @@
 #define _ARK_H_
 
 // ArkLibrary 버전 (Ark.h 와 ArkXX.dll 파일의 버전이 동일한지 여부 판단용)
-#define ARK_LIBRARY_VERSION								0x20110722
+#define ARK_LIBRARY_VERSION								(0x50000000 + 0x00120628)
 
 
 // 에러코드
@@ -51,7 +51,7 @@ enum ARKERR
 	ARKERR_BZIP2_ERROR									= 0x32,		// BZIP2 압축해제중 에러 발생
 	ARKERR_INVALID_DEST_PATH							= 0x33,		// 경로명에 ../ 이 포함된 경우, 대상 경로에 접근이 불가능한 경우
 	ARKERR_CANT_CREATE_FOLDER							= 0x34,		// 경로 생성 실패
-	ARKERR_DATA_CORRUPTED								= 0x35,		// 압축푸는데 데이타가 손상됨 + RAR 분할압축 파일의 뒷부분이 없음
+	ARKERR_DATA_CORRUPTED								= 0x35,		// 압축푸는데 데이타가 손상됨 or RAR 분할압축 파일의 뒷부분이 없음
 	ARKERR_CANT_OPEN_FILE_TO_WRITE						= 0x36,		// 쓰기용으로 파일 열기 실패
 	ARKERR_INVALID_INDEX								= 0x37,		// 압축풀 대상의 index 파라메터가 잘못됨
 	ARKERR_CANT_READ_CODEC_HEADER						= 0x38,		// 압축 코덱의 헤더를 읽는데 에러
@@ -78,6 +78,13 @@ enum ARKERR
 	ARKERR_INVALID_PASSWD_OR_BROKEN_ARCHIVE				= 0x60,		// 암호가 틀리거나 파일이 손상되었음 (rar 포맷)
 	ARKERR_ZIP_LAST_VOL_ONLY							= 0x61,		// 분할 zip 인데 마지막 zip 파일만 열려고 했음
 	ARKERR_ACCESS_DENIED_TO_DEST_PATH					= 0x62,		// 대상 폴더에 대해서 쓰기 권한이 없음
+	ARKERR_NOT_ENOUGH_MEMORY							= 0x63,		// 메모리가 부족함
+	ARKERR_NOT_ENOUGH_MEMORY_LZMA_ENCODE				= 0x64,		// LZMA 압축중 메모리가 부족함
+	ARKERR_CANT_OPEN_SHARING_VIOLATION					= 0x65,		// 파일이 잠겨있어서 열 수 없음 (ERROR_SHARING_VIOLATION, WIN32 전용)
+	ARKERR_CANT_OPEN_ERROR_LOCK_VIOLATION				= 0x66,		// 파일이 잠겨있어서 열 수 없음 (ERROR_LOCK_VIOLATION, WIN32 전용)
+	ARKERR_CANT_LOAD_UNACE								= 0x67,		// unace32.exe 혹은 unacev2.dll 파일을 로드할 수 없음 (WIN32 전용)
+	ARKERR_NOT_SUPPORTED_OPERATION						= 0x68,		// 지원하지 않는 작동입니다. (ACE 파일을 IArkSimpleOutStream 를 이용해 압축해제할 경우 발생)
+	ARKERR_CANT_CONVERT_FILENAME						= 0x69,		// 파일명이 잘못되어서 유니코드 파일명으로 바꿀 수 없음(posix 환경에서 iconv 사용시 코드페이지가 잘못된 경우 사용할 수 없는 문자 때문에 발생)
 
 	ARKERR_CORRUPTED_FILE								= 0x100,	// 파일이 손상되었음
 	ARKERR_INVALID_FILE									= 0x101,	// 포맷이 다르다
@@ -94,6 +101,8 @@ enum ARKERR
 	ARKERR_INVALID_PARAM								= 0x403,	// 잘못된 파라메터로 호출하였음
 	ARKERR_CANT_OPEN_INPUT_SFX							= 0x404,	// SFX 파일을 열지 못함
 	ARKERR_SFX_SIZE_OVER_4GB							= 0x405,	// SFX 파일의 크기가 4GB를 넘었음
+	ARKERR_CANT_LOAD_ARKLGPL							= 0x406,	// ArkXXLgpl.dll 파일을 열지 못함
+	ARKERR_FILE_SIZE_OVER_4GB							= 0x407,	// 파일 크기가 4GB를 넘었음
 
 	ARKERR_ALREADY_DLL_CREATED							= 0x902,	// (CArkLib) 이미 ARK DLL 파일을 로드하였음
 	ARKERR_LOADLIBRARY_FAILED							= 0x903,	// (CArkLib) LoadLibrary() 호출 실패
@@ -140,6 +149,8 @@ enum ARK_FF
 	ARK_FF_BAMSFX_NOTFIRSTVOL,				// 
 	ARK_FF_TGZ,								// .tar.gz
 	ARK_FF_TBZ,								// .tar.bz2
+	ARK_FF_J2J,								// .j2j
+	ARK_FF_J2JBROKEN,						// 뒷부분이 잘린 j2j
 
 	ARK_FF_UNKNOWN				= 0x00ff,	// 알 수 없는 파일 포맷
 
@@ -161,7 +172,8 @@ enum ARK_FF
 	ARK_FF_PNG					= 0x0206,	// 
 	ARK_FF_GIF					= 0x0207,	// 
 	ARK_FF_OGGS					= 0x0208,	// OggS
-	ARK_FF_NOTARCHIVE_LAST		= 0x0208,
+	ARK_FF_MATROSKA				= 0x0209,	// MKV
+	ARK_FF_NOTARCHIVE_LAST		= 0x0209,
 
 };
 
@@ -179,6 +191,7 @@ enum ARK_ENCRYPTION_METHOD
 	ARK_ENCRYPTION_METHOD_EGG_AES256		= 0x07,
 
 	ARK_ENCRYPTION_METHOD_RAR				= 0x08,	// RAR 암호 방식
+	ARK_ENCRYPTION_METHOD_ACE				= 0x09,	// ACE 암호
 
 	ARK_ENCRYPTION_METHOD_ETC				= 0x99,	
 
@@ -239,7 +252,8 @@ enum ARK_COMPRESSION_METHOD
 	ARK_COMPRESSION_METHOD_BCJ2			=	504,	// 7z
 	ARK_COMPRESSION_METHOD_LZX			=	505,	// CAB
 	ARK_COMPRESSION_METHOD_LZXWIM		=	506,	// wim
-	ARK_COMPRESSION_METHOD_QUANTUM		=	507,	// cab...
+	ARK_COMPRESSION_METHOD_OBDEFLATE	=	508,	// Obfuscated deflate (alz)
+	ARK_COMPRESSION_METHOD_DELTA		=	509,	// 7z
 
 	ARK_COMPRESSION_METHOD_LH0			=	600,	// -lh0-
 	ARK_COMPRESSION_METHOD_LH1			=	601,	// -lh1-
@@ -253,6 +267,8 @@ enum ARK_COMPRESSION_METHOD
 	ARK_COMPRESSION_METHOD_LZ5			=	609,	// -lz5-
 	ARK_COMPRESSION_METHOD_LZ4			=	610,	// -lz4-
 	ARK_COMPRESSION_METHOD_LHD			=	611,	// -lhd-
+	ARK_COMPRESSION_METHOD_PM0			=	612,	// -pm0-
+	ARK_COMPRESSION_METHOD_PM2			=	613,	// -pm2-
 
 	ARK_COMPRESSION_METHOD_LZX15		=	715,	// LZX (WINDOW SIZE 15bit)
 	ARK_COMPRESSION_METHOD_LZX16		=	716,	// 
@@ -262,19 +278,32 @@ enum ARK_COMPRESSION_METHOD
 	ARK_COMPRESSION_METHOD_LZX20		=	720,	// 
 	ARK_COMPRESSION_METHOD_LZX21		=	721,	// LZX (WINDOW SIZE 21bit)
 
-	ARK_COMPRESSION_METHOD_ARJ1			=	801,	// Arj Method 1
-	ARK_COMPRESSION_METHOD_ARJ2			=	802,	//            2
-	ARK_COMPRESSION_METHOD_ARJ3			=	803,	//            3
-	ARK_COMPRESSION_METHOD_ARJ4			=	804,	//            4
+	ARK_COMPRESSION_METHOD_QUANTUM10	=	810,	// QTMD(WINDOW SIZE 10bit)
+	ARK_COMPRESSION_METHOD_QUANTUM11	=	811,	//
+	ARK_COMPRESSION_METHOD_QUANTUM12	=	812,	//
+	ARK_COMPRESSION_METHOD_QUANTUM13	=	813,	//
+	ARK_COMPRESSION_METHOD_QUANTUM14	=	814,	//
+	ARK_COMPRESSION_METHOD_QUANTUM15	=	815,	//
+	ARK_COMPRESSION_METHOD_QUANTUM16	=	816,	//
+	ARK_COMPRESSION_METHOD_QUANTUM17	=	817,	//
+	ARK_COMPRESSION_METHOD_QUANTUM18	=	818,	//
+	ARK_COMPRESSION_METHOD_QUANTUM19	=	819,	//
+	ARK_COMPRESSION_METHOD_QUANTUM20	=	820,	//
+	ARK_COMPRESSION_METHOD_QUANTUM21	=	821,	// QTMD(WINDOW SIZE 21bit)
 
-	ARK_COMPRESSION_METHOD_ACELZ77		=	810,	// ace lz77
-	ARK_COMPRESSION_METHOD_ACE20		=	811,	// ace v20
-	ARK_COMPRESSION_METHOD_ACE			=	812,	// ace 최신?
+	ARK_COMPRESSION_METHOD_ARJ1			=	901,	// Arj Method 1
+	ARK_COMPRESSION_METHOD_ARJ2			=	902,	//            2
+	ARK_COMPRESSION_METHOD_ARJ3			=	903,	//            3
+	ARK_COMPRESSION_METHOD_ARJ4			=	904,	//            4
+
+	ARK_COMPRESSION_METHOD_ACELZ77		=	910,	// ace lz77
+	ARK_COMPRESSION_METHOD_ACE20		=	911,	// ace v20
+	ARK_COMPRESSION_METHOD_ACE			=	912,	// ace 최신?
 
 	// 
 	/////////////////////////////////////////////////////////////////
 
-	ARK_COMPRESSION_METHOD_UNKNOWN		=	999,	// unknown
+	ARK_COMPRESSION_METHOD_UNKNOWN		=	9999,	// unknown
 };
 
 // 분할 압축 스타일
@@ -290,11 +319,13 @@ enum ARK_MULTIVOL_STYLE
 	ARK_MULTIVOL_STYLE_R00,				// .rar .r00 .r01 스타일
 	ARK_MULTIVOL_STYLE_ARJ,				// .arj .a01 .a02 스타일
 	ARK_MULTIVOL_STYLE_BAMSFX,			// 밤톨이 sfx (exe, .002 .003 ...)
+	ARK_MULTIVOL_STYLE_BDZSFX,			// 반디집 SFX (exe, .e01 .e02 ...)
+	ARK_MULTIVOL_STYLE_CAB,				// 분할 cab 파일
 };
 
 
 // 파일 속성
-#define ARK_FILEATTR					int
+#define ARK_FILEATTR					unsigned int
 #define ARK_FILEATTR_NONE				0x00
 #define ARK_FILEATTR_READONLY			0x01	// FILE_ATTRIBUTE_READONLY
 #define ARK_FILEATTR_HIDDEN				0x02	// FILE_ATTRIBUTE_HIDDEN
@@ -304,7 +335,8 @@ enum ARK_MULTIVOL_STYLE
 
 // 코드 페이지
 #define ARK_CP_ACP						0		// == CP_ACP
-#define ARK_CP_KOR						949		
+#define ARK_CP_KOR						949		// EUC-KR, CP949 
+#define ARK_CP_JPN						932		// SHIFT-JIS, CP932
 #define ARK_CP_UTF8						65001	// == CP_UTF8
 #define ARK_CP_UTF8_MAC					65002	// 맥용 utf8 코드 페이지
 
@@ -314,7 +346,6 @@ enum ARK_MULTIVOL_STYLE
 
 // WIN32 이외의 시스템일 경우 기본 타입 정의
 #ifndef TRUE
-	typedef int                 BOOL;
 	#define FALSE               0
 	#define TRUE                1
 	typedef char				CHAR;
@@ -322,7 +353,12 @@ enum ARK_MULTIVOL_STYLE
 	typedef unsigned int		UINT32;
 	typedef const char*			LPCSTR;
 	typedef const wchar_t*		LPCWSTR;
+	typedef unsigned char       BYTE;
 #endif
+
+// BOOL 대신 BOOL32 를 사용한다.
+typedef int			BOOL32;
+
 
 #ifndef PURE
 #	define PURE                = 0
@@ -334,6 +370,7 @@ enum ARK_MULTIVOL_STYLE
 #else
 	typedef signed long long	INT64;
 	#define WINAPI				
+	#define THREAD_PRIORITY_NORMAL 0
 #endif
 
 // use os default packing
@@ -350,6 +387,12 @@ struct SArkFileTime									// FILETIME(ntfs)과 동일
 	UINT32 dwLowDateTime;
 	UINT32 dwHighDateTime;
 };
+struct SArkNtfsFileTimes							// NTSF 파일 시간 정보
+{
+	SArkFileTime	mtime;							// 마지막 수정 시간
+	SArkFileTime	ctime;							// 파일을 생성한 시간
+	SArkFileTime	atime;							// 마지막으로 파일에 접근한 시간
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,31 +401,34 @@ struct SArkFileTime									// FILETIME(ntfs)과 동일
 //
 struct SArkFileItem
 {
-	CHAR*					fileName;							// 압축파일에 저장된 파일명 (이 이름은 폴더 경로명도 포함한다)
+	CHAR*					fileName;					// 압축파일에 저장된 파일명 (이 이름은 폴더 경로명도 포함한다)
 	WCHAR*					fileNameW;
 	WCHAR*					fileCommentW;
-	ARK_TIME_T				fileTime;							// last modified(write) time
-	SArkFileTime			fileTimeNtfs;						// ''
+	ARK_TIME_T				fileTime;					// last modified(write) time
 	INT64					compressedSize;
 	INT64					uncompressedSize;
-	ARK_ENCRYPTION_METHOD	encryptionMedhod;
+	ARK_ENCRYPTION_METHOD	encryptionMethod;
 	ARK_FILEATTR			attrib;
 	UINT32					crc32;
 	ARK_COMPRESSION_METHOD	compressionMethod;
+	SArkNtfsFileTimes*		ntfsFileTimes;				// NTFS 파일 시간 정보. 압축파일에 NTFS 파일정보가 없으면 NULL임
+	BOOL32					isUnicodeFileName;			// 유니코드를 지원하는 압축포맷을 통해서 가져온 파일 이름인가? (즉, fileNameW를 100% 믿을 수 있는가)
 
-	BOOL					IsFolder() const { return attrib & ARK_FILEATTR_DIRECTORY ? TRUE : FALSE;}
+	BOOL32					IsFolder() const { return attrib & ARK_FILEATTR_DIRECTORY ? TRUE : FALSE;}
 };
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// 압축 해제 진행 상황 정보
+// 압축 및 압축 해제 진행 상황 정보
 //
 struct SArkProgressInfo
 {
 	float		fCurPercent;		// 현재 파일의 압축 해제 진행율(%)
 	float		fTotPercent;		// 전체 파일의 압축 해제 진행율(%)
-	int			processed;			// undocumented 
+	BOOL32		bCompleting;		// 마무리 중인가?
+	float		fCompletingPercent;	// 마무리 중일때 진행율(%)
+	int			processed;			// undocumented - do not use
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,11 +443,31 @@ struct SArkGlobalOpt
 		bTreatTGZAsSolidArchive = FALSE;
 		bTreatTBZAsSolidArchive = FALSE;
 		bAzoSupport = FALSE;
+		bTreatUnixZipFileNameAsUTF8 = TRUE;
+		bConvertNFD2NFCWhenMacOS = FALSE;
+		bIgnoreMacOSXMetaFolder = FALSE;
+		bUseLongPathName = FALSE;
 	}
-	BOOL bPrintAssert;				// ASSERT 발생시 stdout 에 출력 여부 결정(posix 전용)
-	BOOL bTreatTGZAsSolidArchive;	// TGZ 파일을 솔리드 압축된 파일처럼 처리하기
-	BOOL bTreatTBZAsSolidArchive;	// TBZ 파일을 솔리드 압축된 파일처럼 처리하기
-	BOOL bAzoSupport;				// azo 알고리즘 지원 여부
+	BOOL32 bPrintAssert;					// ASSERT 발생시 stdout 에 출력 여부 결정(posix 전용)
+	BOOL32 bTreatTGZAsSolidArchive;		// TGZ 파일을 솔리드 압축된 파일처럼 처리하기
+	BOOL32 bTreatTBZAsSolidArchive;		// TBZ 파일을 솔리드 압축된 파일처럼 처리하기
+	BOOL32 bAzoSupport;					// azo 알고리즘 지원 여부
+	BOOL32 bTreatUnixZipFileNameAsUTF8;	// zip 파일이 unix 에서 압축된 경우 무조건 utf8 코드페이지 처리
+	BOOL32 bConvertNFD2NFCWhenMacOS;	// MAC OS 에서 압축한 파일일 경우 NFD를 NFC로 자동 변환
+	BOOL32 bIgnoreMacOSXMetaFolder;		// zip 포맷의 __MACOSX/ 폴더를 무시한다.
+	BOOL32 bUseLongPathName;			// 경로명이 260자가 넘어도 파일이나 폴더를 생성하기(win32 전용)
+};
+
+// 코드페이지 관련
+struct SArkDetectCodepage
+{
+	SArkDetectCodepage()
+	{ fileCount2Detect=100; codePage = 0; codePageName[0] = 0; confidence=0; have2change=FALSE; }
+	int		fileCount2Detect;			// [in] 앞에서 부터 몇개의 파일명을 가지고 처리할 것인가?
+	int		codePage;					// [out] windows 용 codepage 숫자
+	char	codePageName[128];			// [out] codepage 문자열 이름
+	int		confidence;					// [out] 인식된 코드페이지의 신뢰도 (0~100)
+	BOOL32	have2change;				// [out] 현재 코드페이지에 문제가 있는듯 하다. confidence 수치가 낮아도 바꾸는게 좋을듯.
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -428,13 +494,13 @@ enum ARK_PASSWORD_ASKTYPE			// OnAskPassword() 호출 이유
 #define ARK_MAX_PASS				300
 struct IArkEvent
 {
-	ARKMETHOD(void)					OnOpening(const SArkFileItem* pFileItem, float progress, BOOL& bStop) PURE;
+	ARKMETHOD(void)					OnOpening(const SArkFileItem* pFileItem, float progress, BOOL32& bStop) PURE;
 
-	ARKMETHOD(void)					OnStartFile(const SArkFileItem* pFileItem, BOOL& bStopCurrent, BOOL& bStopAll) PURE;
-	ARKMETHOD(void)					OnProgressFile(const SArkProgressInfo* pProgressInfo, BOOL& bStopCurrent, BOOL& bStopAll) PURE;
+	ARKMETHOD(void)					OnStartFile(const SArkFileItem* pFileItem, BOOL32& bStopCurrent, BOOL32& bStopAll) PURE;
+	ARKMETHOD(void)					OnProgressFile(const SArkProgressInfo* pProgressInfo, BOOL32& bStopCurrent, BOOL32& bStopAll) PURE;
 	ARKMETHOD(void)					OnCompleteFile(const SArkProgressInfo* pProgressInfo, ARKERR nErr) PURE;
 
-	ARKMETHOD(void)					OnError(ARKERR nErr, const SArkFileItem* pFileItem, BOOL bIsWarning, BOOL& bStopAll) PURE;
+	ARKMETHOD(void)					OnError(ARKERR nErr, const SArkFileItem* pFileItem, BOOL32 bIsWarning, BOOL32& bStopAll) PURE;
 	ARKMETHOD(void)					OnMultiVolumeFileChanged(LPCWSTR szPathFileName) PURE;
 
 	ARKMETHOD(void)					OnAskOverwrite(const SArkFileItem* pFileItem, LPCWSTR szLocalPathName, ARK_OVERWRITE_MODE& overwrite, WCHAR pathName2Rename[ARK_MAX_PATH]) PURE;
@@ -448,11 +514,11 @@ struct IArkEvent
 //
 struct IArkSimpleOutStream
 {
-	ARKMETHOD(BOOL)					Open(LPCWSTR szPathName) PURE;
-	ARKMETHOD(BOOL)					SetSize(INT64 nSize) PURE;
-	ARKMETHOD(BOOL)					Write(const void* lpBuffer, UINT32 nNumberOfBytesToWrite) PURE;
-	ARKMETHOD(BOOL)					Close() PURE;
-	ARKMETHOD(BOOL)					CreateFolder(LPCWSTR szPathName) PURE;
+	ARKMETHOD(BOOL32)				Open(LPCWSTR szPathName) PURE;
+	ARKMETHOD(BOOL32)				SetSize(INT64 nSize) PURE;
+	ARKMETHOD(BOOL32)				Write(const void* lpBuffer, UINT32 nNumberOfBytesToWrite) PURE;
+	ARKMETHOD(BOOL32)				Close() PURE;
+	ARKMETHOD(BOOL32)				CreateFolder(LPCWSTR szPathName) PURE;
 };
 
 
@@ -464,10 +530,10 @@ struct IArk
 {
 	ARKMETHOD(void)					Release() PURE;
 									
-	ARKMETHOD(BOOL)  				Open(LPCSTR  filePath, LPCSTR password) PURE; 
-	ARKMETHOD(BOOL)  				Open(LPCWSTR filePath, LPCWSTR password) PURE; 
+	ARKMETHOD(BOOL32)  				Open(LPCSTR  filePath, LPCSTR password) PURE; 
+	ARKMETHOD(BOOL32)  				Open(LPCWSTR filePath, LPCWSTR password) PURE; 
 	ARKMETHOD(void)					Close() PURE;
-	ARKMETHOD(BOOL)  				TestArchive() PURE; 
+	ARKMETHOD(BOOL32)  				TestArchive() PURE; 
 
 	ARKMETHOD(ARK_FF)  				CheckFormat(LPCSTR  filePath) const PURE; 
 	ARKMETHOD(ARK_FF)  				CheckFormat(LPCWSTR filePath) const PURE; 
@@ -478,28 +544,28 @@ struct IArk
 	ARKMETHOD(int)					GetFileItemCount() const PURE;
 	ARKMETHOD(const SArkFileItem*)	GetFileItem(int index) const PURE;
 	ARKMETHOD(ARK_FF)				GetFileFormat() const PURE;
-	ARKMETHOD(BOOL)					IsBrokenArchive() const PURE;
-	ARKMETHOD(BOOL)					IsEncryptedArchive() const PURE;
-	ARKMETHOD(BOOL)					IsSolidArchive() const PURE;
-	ARKMETHOD(BOOL)					IsOpened() const PURE;
+	ARKMETHOD(BOOL32)				IsBrokenArchive() const PURE;
+	ARKMETHOD(BOOL32)				IsEncryptedArchive() const PURE;
+	ARKMETHOD(BOOL32)				IsSolidArchive() const PURE;
+	ARKMETHOD(BOOL32)				IsOpened() const PURE;
 
-	ARKMETHOD(BOOL)					ExtractAllTo(LPCSTR folderPath) PURE;						// 전체 파일 풀기
-	ARKMETHOD(BOOL)					ExtractAllTo(LPCWSTR folderPath) PURE;
-	ARKMETHOD(BOOL)					ExtractAllTo(IArkSimpleOutStream* outStream) PURE;
+	ARKMETHOD(BOOL32)				ExtractAllTo(LPCSTR folderPath) PURE;						// 전체 파일 풀기
+	ARKMETHOD(BOOL32)				ExtractAllTo(LPCWSTR folderPath) PURE;
+	ARKMETHOD(BOOL32)				ExtractAllTo(IArkSimpleOutStream* outStream) PURE;
 
-	ARKMETHOD(BOOL)					ExtractOneTo(int index, LPCWSTR folderPath) PURE;			// 하나 파일 풀기
-	ARKMETHOD(BOOL)					ExtractOneTo(int index, LPCSTR folderPath) PURE;
-	ARKMETHOD(BOOL)					ExtractOneTo(int index, IArkSimpleOutStream* outStream) PURE;
-	ARKMETHOD(BOOL)					ExtractOneAs(int index, LPCWSTR filePathName, WCHAR resultPathName[ARK_MAX_PATH]) PURE;			// 파일명을 지정해서 파일 하나 풀기
+	ARKMETHOD(BOOL32)				ExtractOneTo(int index, LPCWSTR folderPath) PURE;			// 하나 파일 풀기
+	ARKMETHOD(BOOL32)				ExtractOneTo(int index, LPCSTR folderPath) PURE;
+	ARKMETHOD(BOOL32)				ExtractOneTo(int index, IArkSimpleOutStream* outStream) PURE;
+	ARKMETHOD(BOOL32)				ExtractOneAs(int index, LPCWSTR filePathName, WCHAR resultPathName[ARK_MAX_PATH]) PURE;			// 파일명을 지정해서 파일 하나 풀기
 
-	ARKMETHOD(BOOL)					AddIndex2ExtractList(int index) PURE;						// 압축풀 파일 인덱스를 목록에 추가
+	ARKMETHOD(BOOL32)				AddIndex2ExtractList(int index) PURE;						// 압축풀 파일 인덱스를 목록에 추가
 	ARKMETHOD(void)					ClearExtractList() PURE;									// 압축풀 파일 목록 삭제하기
 	ARKMETHOD(int)					GetExtractListCount() const PURE;							// 압축풀 파일 목록의 갯수
-	ARKMETHOD(BOOL)					ExtractMultiFileTo(LPCSTR szDestPath) PURE;					// 몇개 파일 풀기
-	ARKMETHOD(BOOL)					ExtractMultiFileTo(LPCWSTR szDestPath, LPCWSTR szPath2Remove=NULL) PURE;
-	ARKMETHOD(BOOL)					ExtractMultiFileTo(IArkSimpleOutStream* outStream) PURE;
+	ARKMETHOD(BOOL32)				ExtractMultiFileTo(LPCSTR szDestPath) PURE;					// 몇개 파일 풀기
+	ARKMETHOD(BOOL32)				ExtractMultiFileTo(LPCWSTR szDestPath, LPCWSTR szPath2Remove=NULL) PURE;
+	ARKMETHOD(BOOL32)				ExtractMultiFileTo(IArkSimpleOutStream* outStream) PURE;
 
-	ARKMETHOD(BOOL)					SetEvent(IArkEvent* pEvent) PURE;
+	ARKMETHOD(BOOL32)				SetEvent(IArkEvent* pEvent) PURE;
 	ARKMETHOD(ARKERR)				GetLastError() const PURE;
 	ARKMETHOD(void)					SetCodePage(int cp) PURE;
 
@@ -511,9 +577,13 @@ struct IArk
 	ARKMETHOD(INT64)				GetArchiveFileSize() const PURE;
 	ARKMETHOD(INT64)				GetArchiveStartPos() const PURE;
 	ARKMETHOD(LPCWSTR)				GetFilePathName() const PURE;
-	ARKMETHOD(int)					FindIndex(LPCWSTR szFileNameW, LPCSTR szFileNameA, BOOL bCaseSensitive) const PURE;
+	ARKMETHOD(int)					FindIndex(LPCWSTR szFileNameW, LPCSTR szFileNameA, BOOL32 bCaseSensitive) const PURE;
 	ARKMETHOD(LPCWSTR)				GetArchiveComment() const PURE;
 	ARKMETHOD(ARK_MULTIVOL_STYLE)	GetMultivolStyle() const PURE;
+
+	ARKMETHOD(BOOL32)				DetectCurrentArchivesCodepage(SArkDetectCodepage& dcp) const PURE;
+	ARKMETHOD(BOOL32)				ChangeCurrentArchivesCodepage(int codePage) PURE;
+
 
 	///////////////////////
 	// undocumented (do not use)
@@ -524,15 +594,15 @@ struct IArk
 	ARKMETHOD(void)					_SetUserKey(void* key) PURE;
 	ARKMETHOD(UINT32)  				_CheckCRC32(LPCWSTR filePath) PURE; 
 	ARKMETHOD(void*)				_GetExtractor() PURE;
-	ARKMETHOD(BOOL)					_DisableFile(int index) PURE;
+	ARKMETHOD(void*)				_GetInStream() PURE;
 
 	// for c++ builder
-	ARKMETHOD(BOOL)  				_OpenW(LPCWSTR filePath, LPCWSTR password) PURE; 
+	ARKMETHOD(BOOL32)  				_OpenW(LPCWSTR filePath, LPCWSTR password) PURE; 
 	ARKMETHOD(ARK_FF)  				_CheckFormatW(LPCWSTR filePath) const PURE; 
 	ARKMETHOD(void)					_SetPasswordW(LPCWSTR password) PURE;
-	ARKMETHOD(BOOL)					_ExtractAllToW(LPCWSTR folderPath) PURE;
-	ARKMETHOD(BOOL)					_ExtractOneToW(int index, LPCWSTR folderPath) PURE;
-	ARKMETHOD(BOOL)					_ExtractMultiFileToW(LPCWSTR szDestPath, LPCWSTR szPath2Remove=NULL) PURE;
+	ARKMETHOD(BOOL32)				_ExtractAllToW(LPCWSTR folderPath) PURE;
+	ARKMETHOD(BOOL32)				_ExtractOneToW(int index, LPCWSTR folderPath) PURE;
+	ARKMETHOD(BOOL32)				_ExtractMultiFileToW(LPCWSTR szDestPath, LPCWSTR szPath2Remove=NULL) PURE;
 };
 
 
@@ -545,29 +615,50 @@ struct SArkCompressorOpt
 	SArkCompressorOpt(){Init();}
 	void Init()
 	{
+		ff = ARK_FF_ZIP;
 		saveNTFSTime = FALSE;
 		streamOutput = FALSE;
 		compressionMethod = ARK_COMPRESSION_METHOD_DEFLATE;
+		encryptionMethod = ARK_ENCRYPTION_METHOD_ZIP;
 		compressionLevel = -1;							// -1 은 Z_DEFAULT_COMPRESSION
 		splitSize = 0;
 		forceZip64 = FALSE;
 		useDosTime2PasswordCheck = TRUE;
 		sfxPathName = NULL;
 		forceUtf8FileName = FALSE;
+		forceUtf8Comment = FALSE;
 		utf8FileNameIfNeeded = TRUE;
 		bypassWhenUncompressible = FALSE;
+		lzmaEncodeThreadCount = 2;
+		enableMultithreadDeflate = FALSE;
+		deflateEncodeThreadCount = 0;
+		_7zCompressHeader = TRUE;
+		_7zEncryptHeader = FALSE;
+		lzma2NumBlockThreads = -1;
+		threadPriority = THREAD_PRIORITY_NORMAL;
 	}
-	BOOL					saveNTFSTime;				// ntfs 시간 저장 여부
-	BOOL					streamOutput;				// stream 형태로 저장 - 이 값이 TRUE 일 경우 열지 못하는 프로그램이 너무 많음.
-	ARK_COMPRESSION_METHOD	compressionMethod;			// 압축 방식 ( ARK_COMPRESSION_METHOD_STORE, ARK_COMPRESSION_METHOD_DEFLATE )
+	ARK_FF					ff;							// 파일 포맷 ARK_FF_ZIP, ARK_FF_TAR, ARK_FF_TGZ, ARK_FF_7Z, ARK_FF_LZH
+	BOOL32					saveNTFSTime;				// ntfs 시간 저장 여부
+	BOOL32					streamOutput;				// stream 형태로 저장 - 이 값이 TRUE 일 경우 열지 못하는 프로그램이 너무 많음.
+	ARK_COMPRESSION_METHOD	compressionMethod;			// 압축 방식 ( ARK_COMPRESSION_METHOD_STORE, ARK_COMPRESSION_METHOD_DEFLATE, ARK_COMPRESSION_METHOD_LZMA )
+	ARK_ENCRYPTION_METHOD	encryptionMethod;			// 파일에 암호를 걸 경우 사용할 암호 방식 ( ARK_ENCRYPTION_METHOD_ZIP, ARK_ENCRYPTION_METHOD_AES256 만 유효)
 	int						compressionLevel;			// 압축 레벨 ( Z_NO_COMPRESSION, Z_BEST_SPEED ~ Z_BEST_COMPRESSION )
 	INT64					splitSize;					// 분할 압축 크기 (bytes,  0 이면 분할 압축 안함)
-	BOOL					forceZip64;					// 강제로 zip64 정보 저장
-	BOOL					useDosTime2PasswordCheck;	// 암호 체크 데이타를 crc 대신 dostime 을 사용한다. (사용시 압축 속도 향상). 단 분할압축시 이 옵션은 무시됨
+	BOOL32					forceZip64;					// 강제로 zip64 정보 저장
+	BOOL32					useDosTime2PasswordCheck;	// 암호 체크 데이타를 crc 대신 dostime 을 사용한다. (사용시 압축 속도 향상). 단 분할압축시 이 옵션은 무시됨
 	LPCWSTR					sfxPathName;				// sfx를 만들경우 sfx 파일경로명. NULL 이면 사용하지 않음.
-	BOOL					forceUtf8FileName;			// 파일명을 모두 utf8 로 저장
-	BOOL					utf8FileNameIfNeeded;		// 파일명에 유니코드가 포함되어 있을 경우 utf8 로 저장
-	BOOL					bypassWhenUncompressible;	// 압축중 압축이 안될경우 그냥 bypass
+	BOOL32					forceUtf8FileName;			// 파일명을 모두 utf8 로 저장
+	BOOL32					forceUtf8Comment;			// 압축 파일 설명을 utf8 로 저장 (다른 프로그램과 호완되지 않음)
+	BOOL32					utf8FileNameIfNeeded;		// 파일명에 유니코드가 포함되어 있을 경우 utf8 로 저장
+	BOOL32					bypassWhenUncompressible;	// 압축중 압축이 안될경우 그냥 bypass
+	int						lzmaEncodeThreadCount;		// LZMA 압축시 쓰레드 카운트. 1~2
+	BOOL32					enableMultithreadDeflate;	// Deflate 압축시 멀티쓰레드 사용
+	int						deflateEncodeThreadCount;	// Deflate 압축시 사용할 쓰래드 갯수. 0 이면 기본값 사용
+
+	BOOL32					_7zCompressHeader;			// 7zip 압축시 헤더를 압축할 것인가?
+	BOOL32					_7zEncryptHeader;			// 7zip 압축시 헤더를 암호화 할 것인가? (암호 지정시)
+	int						lzma2NumBlockThreads;		// lzma2 압축시 쓰레드 갯수
+	int						threadPriority;				// 멀티코어를 이용해서 압축시 쓰레드 우선 순위
 };
 
 
@@ -581,19 +672,19 @@ struct IArkCompressor
 
 	ARKMETHOD(void)			Init() PURE;												// 초기화 (새로운 압축파일 생성 시작)
 	ARKMETHOD(void)			SetEvent(IArkEvent* pEvent) PURE;							// 반드시 Init() 호출후 매번 호출해야 한다.
-	ARKMETHOD(void)			SetOption(SArkCompressorOpt& opt, CHAR* password) PURE;		// CreateArchive() 호출전에만 호출하면 언제 호출해도 상관없고, 한번 호출하면 끝
+	ARKMETHOD(BOOL32)		SetOption(SArkCompressorOpt& opt, const BYTE* password, int pwLen) PURE;// CreateArchive() 호출전에만 호출하면 언제 호출해도 상관없고, 한번 호출하면 끝
 
-	ARKMETHOD(BOOL)			SetArchiveFile(IArk* pArchive) PURE;						// 원본 파일 세팅 
-	ARKMETHOD(BOOL)			AddFileItem(LPCWSTR	szSrcPathName, LPCWSTR szTargetPathName, BOOL overwrite, LPCWSTR szFileComment=NULL) PURE;
+	ARKMETHOD(BOOL32)		SetArchiveFile(IArk* pArchive) PURE;						// 원본 파일 세팅 
+	ARKMETHOD(BOOL32)		AddFileItem(LPCWSTR	szSrcPathName, LPCWSTR szTargetPathName, BOOL32 overwrite, LPCWSTR szFileComment=NULL, INT64 fileSize=-1) PURE;
 
-	ARKMETHOD(BOOL)			RenameItem(int index, LPCWSTR szPathName) PURE;				// SetArchiveFile() 로 지정한 파일의 이름을 바꾼다.
-	ARKMETHOD(BOOL)			DeleteItem(int index) PURE;									// SetArchiveFile() 로 지정한 파일을 삭제한다.
+	ARKMETHOD(BOOL32)		RenameItem(int index, LPCWSTR szPathName) PURE;				// SetArchiveFile() 로 지정한 파일의 이름을 바꾼다.
+	ARKMETHOD(BOOL32)		DeleteItem(int index) PURE;									// SetArchiveFile() 로 지정한 파일을 삭제한다.
 
 	ARKMETHOD(int)			FindFileItemIndex2Add(LPCWSTR szTargetPathName) PURE;						// 기존 목록에 존재하는지 확인한다.
-	ARKMETHOD(BOOL)			GetFileItemInfo(int index, INT64& fileSize, ARK_TIME_T& fileTime) PURE;		// 목록에 있는 파일의 정보 가져오기
+	ARKMETHOD(BOOL32)		GetFileItemInfo(int index, INT64& fileSize, ARK_TIME_T& fileTime) PURE;		// 목록에 있는 파일의 정보 가져오기
 	ARKMETHOD(INT64)		GetTotalFileSize2Archive() PURE;
 
-	ARKMETHOD(BOOL)			CreateArchive(LPCWSTR szPathName, LPCWSTR szArchiveComment=NULL) PURE;
+	ARKMETHOD(BOOL32)		CreateArchive(LPCWSTR szPathName, LPCWSTR szArchiveComment=NULL) PURE;
 
 	ARKMETHOD(ARKERR)		GetLastError() const PURE;
 };
@@ -606,9 +697,9 @@ struct IArkCompressor
 
 #ifdef _WIN32
 extern "C" __declspec(dllexport) IArk*				CreateArk(UINT32 SDKVersion);
-extern "C" IArk*									CreateArkLib(UINT32 SDKVersion);
 extern "C" __declspec(dllexport) IArkCompressor*	CreateArkCompressor(UINT32 SDKVersion);
 #endif
+extern "C" IArk*									CreateArkLib(UINT32 SDKVersion);
 
 
 #endif // _ARK_H_

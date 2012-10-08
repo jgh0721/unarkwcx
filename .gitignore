@@ -1,3 +1,10 @@
 *.ipch
 *.sdf
 *.suo
+ipch
+*.ncb
+_build
+_object
+Debug
+Release
+*.user

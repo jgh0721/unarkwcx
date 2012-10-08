@@ -2,6 +2,8 @@
 
 #include "ConvertStr.h"
 
+#pragma warning( disable: 4996 )
+
 int getActualUTF8Length( const char* szUTF8 );
 int convertUTF8toUTF16( const char* pszUTF8, wchar_t* pwszUTF16 );
 int convertUTF16toUTF8( wchar_t* pwszUTF16, char* pszUTF8 );
@@ -20,7 +22,7 @@ int convertUTF8toUTF16( const char* pszUTF8, wchar_t* pwszUTF16 )
 {
 	int nRetSize = 0;
 	int iIndex = 0;
-	WCHAR wChar;
+	wchar_t wChar;
 
 	while( 0 != pszUTF8[iIndex] )
 	{
@@ -83,8 +85,8 @@ int convertUTF16toUTF8( wchar_t* pwszUTF16, char* pszUTF8 )
 
 	int nTotalBytes = 0;
 	int nBytes = -1;
-	BYTE szBytes[ 4 ] = {0,};
-	WCHAR wChar;
+	unsigned char szBytes[ 4 ] = {0,};
+	wchar_t wChar;
 	wchar_t* pwszBuffer = pwszUTF16;
 
 	while( *pwszBuffer != L'\0' )
@@ -94,7 +96,7 @@ int convertUTF16toUTF8( wchar_t* pwszUTF16, char* pszUTF8 )
 		if( wChar < 0x80 )
 		{
 			nBytes = 1;
-			szBytes[ 0 ] = (BYTE)wChar;
+			szBytes[ 0 ] = (unsigned char)wChar;
 		}
 		else if( wChar < 0x800 )
 		{
@@ -139,6 +141,12 @@ CA2U::operator const wchar_t*()
 {
 	return c_str();
 }
+#ifdef _AFX
+CA2U::operator const CStringW()
+{
+	return c_str();
+}
+#endif
 
 const wchar_t* CA2U::c_str()
 {
@@ -206,7 +214,15 @@ CU2A::CU2A( const wchar_t* pwszStr )
 
 	CopyWideString( &m_pwszBuffer, pwszStr );
 }
+#ifdef _AFX
+CU2A::CU2A( const CStringW& str  )
+	: m_pszBuffer(NULL),m_pwszBuffer(NULL)
+{
+	assert( str.GetString() != NULL );
 
+	CopyWideString( &m_pwszBuffer, str.GetString() );
+}
+#endif
 CU2A::operator const char*()
 {
 	return c_str();
@@ -277,12 +293,17 @@ CU82U::CU82U( const std::string& str )
 {
 	CopyAnsiString( &m_pszBuffer, str.c_str() );
 }
-
-CU82U::operator const wchar_t*()
+// 
+// CU82U::operator const wchar_t*()
+// {
+// 	return c_str();
+// }
+#ifdef _AFX
+CU82U::operator const CStringW()
 {
 	return c_str();
 }
-
+#endif
 const wchar_t* CU82U::c_str()
 {
 	assert( m_pszBuffer != NULL );
@@ -353,13 +374,23 @@ CU2U8::CU2U8( const wchar_t* pwszStr )
 CU2U8::CU2U8( const std::wstring& str )
 	: m_pszBuffer(NULL),m_pwszBuffer(NULL)
 {
+	assert( str.c_str() != NULL );
+
 	CopyWideString( &m_pwszBuffer, str.c_str() );
 }
-
-CU2U8::operator const char*()
+#ifdef _AFX
+CU2U8::CU2U8( const CStringW& str )
+	: m_pszBuffer(NULL),m_pwszBuffer(NULL)
 {
-	return c_str();
+	assert( str.GetString() != NULL );
+
+	CopyWideString( &m_pwszBuffer, str.GetString() );
 }
+#endif
+// CU2U8::operator const char*()
+// {
+// 	return c_str();
+// }
 
 const char* CU2U8::c_str()
 {
@@ -378,6 +409,8 @@ const char* CU2U8::c_str()
 		return m_pszBuffer;
 #else
 	int nReqSize = getBytesUTF16toUTF8( m_pwszBuffer );
+	m_pszBuffer = new char[ nReqSize ];
+	memset( m_pszBuffer, '\0', nReqSize * sizeof( char ) );
 	int nRetSize = convertUTF16toUTF8( m_pwszBuffer, m_pszBuffer );
 
 	if( nRetSize > 0 )
@@ -452,22 +485,22 @@ const char* CA2U8::c_str()
 			return m_pszBufferU8;
 	}
 #else
-	int nReqSize = mbstowcs( NULL, m_pszBuffer, 0 );
+	int nReqSize = mbstowcs( NULL, m_pszBufferA, 0 );
 	pwszBuffer = new wchar_t[ ++nReqSize ];
 	memset( pwszBuffer, '\0', sizeof(wchar_t) * nReqSize );
 
-	int nRetSize = mbstowcs( pwszBuffer, m_pszBuffer, nReqSize );
+	int nRetSize = mbstowcs( pwszBuffer, m_pszBufferA, nReqSize );
 	if( nRetSize >= 0 )
 	{
 		int nBytes = -1;
-		BYTE szBytes[ 4 ] = {0,};
+		unsigned char szBytes[ 4 ] = {0,};
 		int iLength = wcslen( pwszBuffer );
-		WCHAR wChar;
+		wchar_t wChar;
 		int nLen = 0;
 
 		// 2바이트 한글자는 최대 4바이트로 커질 수 있으므로 넉넉하게 선언
 		m_pszBufferU8 = new char[ 3 * wcslen( pwszBuffer ) ];
-		memset( m_pszBufferU8, '\0', 3 * wcslen( pwszBuffer ) * sizeof( char ) );
+		memset( m_pszBufferU8, '\0', 3 * wcslen( pwszBuffer ) * sizeof( unsigned char ) );
 
 		for( int idx = 0; idx < iLength; ++idx )
 		{
@@ -476,7 +509,7 @@ const char* CA2U8::c_str()
 			if( wChar < 0x80 )
 			{
 				nBytes = 1;
-				szBytes[ 0 ] = (BYTE)wChar;
+				szBytes[ 0 ] = (unsigned char)wChar;
 			}
 			else if( wChar < 0x800 )
 			{
@@ -580,7 +613,19 @@ const char* CU82A::c_str()
 			return m_pszBufferA;
 	}
 #else
-	// TODO UTF-8 -> UTF-16 -> ANSI 변환코드 필요
+	int nReqSize = getActualUTF8Length( m_pszBufferU8 );
+	pwszBuffer = new wchar_t[ nReqSize ];
+	memset( pwszBuffer, '\0', nReqSize * sizeof( wchar_t ) );
+
+	convertUTF8toUTF16( m_pszBufferU8, pwszBuffer );
+
+	nReqSize = wcstombs( NULL, pwszBuffer, 0 );
+	m_pszBufferA = new char[ ++nReqSize ];
+	memset( m_pszBufferA, '\0', nReqSize * sizeof( char ) );
+
+	int nRetSize = wcstombs( m_pszBufferA, pwszBuffer, nReqSize );
+	if( nRetSize >= 0 )
+		return m_pszBufferA;
 #endif
 
 	return "";

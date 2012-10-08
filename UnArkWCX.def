@@ -4,12 +4,13 @@ OpenArchive=_OpenArchive@4
 OpenArchiveW=_OpenArchiveW@4
 
 ReadHeader=_ReadHeader@8
-ReadHeaderEx=_ReadHeaderEx@8
+;ReadHeaderEx=_ReadHeaderEx@8
 ReadHeaderExW=_ReadHeaderExW@8
 
 CloseArchive=_CloseArchive@4
 
 SetChangeVolProc=_SetChangeVolProc@8
+SetChangeVolProcW=_SetChangeVolProcW@8
 
 SetProcessDataProc=_SetProcessDataProc@8
 SetProcessDataProcW=_SetProcessDataProcW@8
@@ -19,5 +20,5 @@ ProcessFileW=_ProcessFileW@16
 
 GetPacketCaps=_GetPackerCaps@0
 
-CanYouHandleThisFile=_CanYouHandleThisFile@4
+; CanYouHandleThisFile=_CanYouHandleThisFile@4
 CanYouHandleThisFileW=_CanYouHandleThisFileW@4
