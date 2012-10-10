@@ -229,13 +229,21 @@ public :				// IArk
 #endif
 
 
-	ARKMETHOD(BOOL32)  			Open(LPCSTR  szFilePathName, LPCSTR szPassword=NULL)
+	ARKMETHOD(BOOL32)  			Open(LPCSTR  filePath, LPCSTR password=NULL)
 	{
-		return m_pArk ? m_pArk->Open(szFilePathName, szPassword) : FALSE;
+		return m_pArk ? m_pArk->Open(filePath, password) : FALSE;
 	}
-	ARKMETHOD(BOOL32)  			Open(LPCWSTR szFilePathName, LPCWSTR szPassword=NULL)
+	ARKMETHOD(BOOL32)  			Open(LPCWSTR filePath, LPCWSTR password=NULL)
 	{
-		return m_pArk ? m_pArk->Open(szFilePathName, szPassword) : FALSE;
+		return m_pArk ? m_pArk->Open(filePath, password) : FALSE;
+	}
+	ARKMETHOD(BOOL32)			Open(BYTE* src, int srcLen, LPCWSTR password=NULL)
+	{
+		return m_pArk ? m_pArk->Open(src, srcLen, password) : FALSE;
+	}
+	ARKMETHOD(BOOL32)  			Open(IArkSimpleInStream* srcStream, LPCWSTR password=NULL)
+	{
+		return m_pArk ? m_pArk->Open(srcStream, password) : FALSE;
 	}
 
 	ARKMETHOD(void)				Close()
@@ -334,7 +342,10 @@ public :				// IArk
 	{
 		return m_pArk ? m_pArk->ExtractOneTo(index, pOutStream) : FALSE;
 	}
-
+	ARKMETHOD(BOOL32)			ExtractOneTo(int index, BYTE* outBuf, int outBufLen)
+	{
+		return m_pArk ? m_pArk->ExtractOneTo(index, outBuf, outBufLen) : FALSE;
+	}
 	ARKMETHOD(BOOL32)			ExtractOneAs(int index, LPCWSTR filePathName, WCHAR resultPathName[ARK_MAX_PATH])
 	{
 		return m_pArk ? m_pArk->ExtractOneAs(index, filePathName, resultPathName) : FALSE;
@@ -379,10 +390,14 @@ public :				// IArk
 	{
 		return m_pArk ? m_pArk->GetLastError() : ARKERR_LIBRARY_NOT_LOADED ;
 	}
-
-	ARKMETHOD(void)				SetCodePage(int n)
+	ARKMETHOD(UINT32)			GetLastSystemError() const 
 	{
-		if(m_pArk) m_pArk->SetCodePage(n);
+		return m_pArk ? m_pArk->GetLastSystemError() : 0 ;
+	}
+
+	ARKMETHOD(void)				SetCodePage(SArkCodepage cp)
+	{
+		if(m_pArk) m_pArk->SetCodePage(cp);
 	}
 
 	ARKMETHOD(LPCWSTR)			EncryptionMethod2Str(ARK_ENCRYPTION_METHOD method) const
@@ -485,9 +500,9 @@ public :				// IArk
 	}
 
 	// for c++ builder only
-	ARKMETHOD(BOOL32)  			_OpenW(LPCWSTR szFilePathName, LPCWSTR szPassword=NULL)
+	ARKMETHOD(BOOL32)  			_OpenW(LPCWSTR filePath, LPCWSTR password=NULL)
 	{
-		return m_pArk ? m_pArk->_OpenW(szFilePathName, szPassword) : FALSE;
+		return m_pArk ? m_pArk->_OpenW(filePath, password) : FALSE;
 	}
 
 	ARKMETHOD(ARK_FF)  			_CheckFormatW(LPCWSTR filePath) const

@@ -4,15 +4,21 @@
 #include "stdafx.h"
 #include "UnArkWCX.h"
 
-#include <time.h>
-#include <Shlwapi.h>
+#include <string>
+#include <vector>
 
-#pragma comment( lib, "shlwapi" )
+
+#include <CommCtrl.h>
+#include <time.h>
 
 #pragma warning( disable: 4996 )
 
 EXTERN_C UNARKWCX_API HANDLE WINAPI OpenArchive( tOpenArchiveData *pArchiveData )
 {
+	LM_TRACE( L"Here" );
+
+	LM_TRACE( L"압축 파일 열기 시도" );
+
 	tOpenArchiveDataW pArchiveDataW;
 
 	pArchiveDataW.ArcName = _wcsdup( CA2U( pArchiveData->ArcName ).c_str() );
@@ -32,6 +38,8 @@ EXTERN_C UNARKWCX_API HANDLE WINAPI OpenArchive( tOpenArchiveData *pArchiveData 
 
 EXTERN_C UNARKWCX_API HANDLE WINAPI OpenArchiveW( tOpenArchiveDataW *pArchiveDataW )
 {
+	LM_TRACE( L"Here" );
+
 	LM_TRACE( L"압축 파일 열기 시도" );
 
 	CArkInfo* pArkInfo = NULL;
@@ -67,6 +75,8 @@ EXTERN_C UNARKWCX_API HANDLE WINAPI OpenArchiveW( tOpenArchiveDataW *pArchiveDat
 
 EXTERN_C UNARKWCX_API int WINAPI ReadHeader( HANDLE hArcData, tHeaderData *pHeaderData )
 {
+	LM_TRACE( L"Here" );
+
 	tHeaderDataExW headerDataW;
 
 	int nResult = ReadHeaderExW( hArcData, &headerDataW );
@@ -88,13 +98,15 @@ EXTERN_C UNARKWCX_API int WINAPI ReadHeader( HANDLE hArcData, tHeaderData *pHead
 
 EXTERN_C UNARKWCX_API int WINAPI ReadHeaderExW( HANDLE hArcData, tHeaderDataExW *pHeaderDataExW )
 {
+	LM_TRACE( L"Here" );
+
 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
 
 	int nResult = 0;
 
 	do
 	{
-		if( pArkInfo == NULL )
+		if( pArkInfo == INVALID_HANDLE_VALUE )
 		{
 			nResult = E_EOPEN;
 			break;
@@ -115,18 +127,25 @@ EXTERN_C UNARKWCX_API int WINAPI ReadHeaderExW( HANDLE hArcData, tHeaderDataExW 
 			break;
 		}
 
+		LM_TRACE( L"Arc Name = %s", pArkInfo->GetArk()->GetFilePathName() );
+		LM_TRACE( L"File Name = %s", pItem->fileNameW );
+		LM_TRACE( L"File Time = %i64d", pItem->fileTime );
+
 		wcsncpy( pHeaderDataExW->ArcName, pArkInfo->GetArk()->GetFilePathName(), 1023 );
 		wcsncpy( pHeaderDataExW->FileName, pItem->fileNameW, 1023 );
 
-		struct tm* tmCurrentTime = localtime( &pItem->fileTime );
 		pHeaderDataExW->FileAttr		= pItem->attrib;
-		pHeaderDataExW->FileTime		= 0;
-		pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_year + 1900 - 1980) << 25;
-		pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_mon + 1) << 21;
-		pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_mday << 16 );
-		pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_hour << 11 );
-		pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_min << 5 );
-		pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_sec/2);
+		struct tm* tmCurrentTime = localtime( &pItem->fileTime );
+		if( tmCurrentTime != NULL )
+		{
+			pHeaderDataExW->FileTime		= 0;
+			pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_year + 1900 - 1980) << 25;
+			pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_mon + 1) << 21;
+			pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_mday << 16 );
+			pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_hour << 11 );
+			pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_min << 5 );
+			pHeaderDataExW->FileTime		|= (tmCurrentTime->tm_sec/2);
+		}
 
 		pHeaderDataExW->PackSize		= pItem->compressedSize & 0xffffffff;
 		pHeaderDataExW->PackSizeHigh	= pItem->compressedSize >> 32;
@@ -144,6 +163,8 @@ EXTERN_C UNARKWCX_API int WINAPI ReadHeaderExW( HANDLE hArcData, tHeaderDataExW 
 
 EXTERN_C UNARKWCX_API int WINAPI ProcessFile( HANDLE hArcData, int Operation, char *DestPath, char *DestName)
 {
+	LM_TRACE( L"Here" );
+
 	int nResult = 0;
 
 	WCHAR* wszDestPath = DestPath == NULL ? NULL : wcsdup( CA2U( DestPath ).c_str() );
@@ -163,6 +184,8 @@ EXTERN_C UNARKWCX_API int WINAPI ProcessFile( HANDLE hArcData, int Operation, ch
 
 EXTERN_C UNARKWCX_API int WINAPI ProcessFileW( HANDLE hArcData, int Operation, WCHAR* pwszDestPath, WCHAR* pwszDestName )
 {
+	LM_TRACE( L"Here" );
+
 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
 	int nResult = 0;
 
@@ -263,58 +286,88 @@ EXTERN_C UNARKWCX_API int WINAPI ProcessFileW( HANDLE hArcData, int Operation, W
 
 EXTERN_C UNARKWCX_API int WINAPI CloseArchive( HANDLE hArcData )
 {
-	if( hArcData != NULL )
+	LM_TRACE( L"Here" );
+
+	if( hArcData != INVALID_HANDLE_VALUE )
 		delete (CArkInfo *)(hArcData);
+	else
+	{
+		gClsArkEvent.pfnProcessDataProc = NULL;
+		gClsArkEvent.pfnProcessDataProcW = NULL;
+		gClsArkEvent.pfnChangeVolProc = NULL;
+		gClsArkEvent.pfnChangeVolProcW = NULL;
+	}
 
 	return 0;
 }
 EXTERN_C UNARKWCX_API void WINAPI SetChangeVolProc( HANDLE hArcData, tChangeVolProc pfnChangeVolProc )
 {
-	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
-	if( pArkInfo != NULL )
-		pArkInfo->GetArkEvent().pfnChangeVolProc = pfnChangeVolProc;
+	LM_TRACE( L"Here" );
+
+// 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
+// 	if( pArkInfo != NULL )
+// 		pArkInfo->GetArkEvent().pfnChangeVolProc = pfnChangeVolProc;
 }
 
 EXTERN_C UNARKWCX_API void WINAPI SetChangeVolProcW( HANDLE hArcData, tChangeVolProcW pfnChangeVolProc )
 {
-	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
-	if( pArkInfo != NULL )
-		pArkInfo->GetArkEvent().pfnChangeVolProcW = pfnChangeVolProc;
+	LM_TRACE( L"Here" );
+
+// 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
+// 	if( pArkInfo != NULL )
+// 		pArkInfo->GetArkEvent().pfnChangeVolProcW = pfnChangeVolProc;
 }
 
 EXTERN_C UNARKWCX_API void WINAPI SetProcessDataProc( HANDLE hArcData, tProcessDataProc pfnProcessDataProc )
 {
+	LM_TRACE( L"Here" );
 
 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
-	if( pArkInfo != NULL )
+	if( pArkInfo != INVALID_HANDLE_VALUE )
 		pArkInfo->GetArkEvent().pfnProcessDataProc = pfnProcessDataProc;
+	else
+		gClsArkEvent.pfnProcessDataProc = pfnProcessDataProc;
 }
 
 EXTERN_C UNARKWCX_API void WINAPI SetProcessDataProcW( HANDLE hArcData, tProcessDataProcW pfnProcessDataProc )
 {
+	LM_TRACE( L"Here" );
+
 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
-	if( pArkInfo != NULL )
+	if( pArkInfo != INVALID_HANDLE_VALUE )
 		pArkInfo->GetArkEvent().pfnProcessDataProcW = pfnProcessDataProc;
+	else
+		gClsArkEvent.pfnProcessDataProcW = pfnProcessDataProc;
 }
 
 EXTERN_C UNARKWCX_API int WINAPI GetPackerCaps()
 {
-	return PK_CAPS_BY_CONTENT;
+	LM_TRACE( L"Here" );
+
+	return 
+		PK_CAPS_NEW |
+		PK_CAPS_MODIFY |
+		PK_CAPS_MULTIPLE |
+		PK_CAPS_DELETE |
+		PK_CAPS_OPTIONS |
+		PK_CAPS_BY_CONTENT;
 }
 
 EXTERN_C UNARKWCX_API BOOL WINAPI CanYouHandleThisFile( char *FileName )
 {
+	LM_TRACE( L"Here" );
 	return CanYouHandleThisFileW( const_cast< WCHAR * >( CA2U( FileName ).c_str() ) );
 }
 
 EXTERN_C UNARKWCX_API BOOL WINAPI CanYouHandleThisFileW( WCHAR *FileName )
 {
+	LM_TRACE( L"Here" );
 	BOOL isCanHandle = FALSE;
 
 	do
 	{
 		CArkLib arkLib;
-		if( arkLib.Create( ARK_DLL_RELEASE_FILE_NAME ) != ARKERR_NOERR )
+		if( arkLib.Create( gArkDLLFullPathName ) != ARKERR_NOERR )
 			break;
 
 		ARK_FF fileFormat = arkLib.CheckFormat( FileName );
@@ -339,23 +392,198 @@ EXTERN_C UNARKWCX_API BOOL WINAPI CanYouHandleThisFileW( WCHAR *FileName )
 	return isCanHandle;
 }
 
+EXTERN_C UNARKWCX_API int WINAPI PackFiles( char* PackedFile, char* SubPath, char* SrcPath, char* AddList, int Flags )
+{
+	LM_TRACE( L"Here" );
+
+	LM_TRACE( "Packed Files = %s", PackedFile );
+	if( SubPath != NULL )
+	{
+		LM_TRACE( "Sub Path = %s", SubPath );
+	}
+	LM_TRACE( "Src Path = %s", SrcPath );
+
+	for( char* pszCurrent = AddList; *pszCurrent != 0; pszCurrent += strlen( pszCurrent ) + 1)
+	{
+		LM_TRACE( L"Add List = %s", pszCurrent );
+	}
+
+	LM_TRACE( "Flags = %d", Flags );
+
+	return 0;
+}
+
+EXTERN_C UNARKWCX_API int WINAPI PackFilesW( wchar_t* PackedFile, wchar_t* SubPath, wchar_t* SrcPath, wchar_t* AddList, int Flags )
+{
+	LM_TRACE( L"Here" );
+
+	std::wstring strSrcPath = SrcPath;
+
+	std::vector< std::wstring > vecAddFile;
+
+	LM_TRACE( L"Packed Files = %s", PackedFile );
+	if( SubPath != NULL )
+	{
+		LM_TRACE( L"Sub Path = %s", SubPath );
+	}
+	LM_TRACE( L"Src Path = %s", SrcPath );
+
+	for( wchar_t* pwszCurrent = AddList; *pwszCurrent != 0; pwszCurrent += wcslen( pwszCurrent ) + 1)
+	{
+		vecAddFile.push_back( pwszCurrent );
+		LM_TRACE( L"Add List = %s", pwszCurrent );
+	}
+
+	CArkLib arkLib;
+	arkLib.Create( gArkDLLFullPathName );
+
+	IArkCompressor* pCompressor = arkLib.CreateCompressor();
+	pCompressor->Init();
+	pCompressor->SetEvent( &gClsArkEvent );
+	SArkCompressorOpt opt;
+	opt.Init();
+	opt.ff = ARK_FF_ISO;
+	pCompressor->SetOption( opt, NULL, 0 );
+
+	for( size_t idx = 0; idx < vecAddFile.size(); ++idx )
+	{
+		pCompressor->AddFileItem( (std::wstring( SrcPath ) + vecAddFile[idx]).c_str(), vecAddFile[idx].c_str(), FALSE );
+	}
+
+	pCompressor->CreateArchive( PackedFile );
+
+	pCompressor->Release();
+
+	arkLib.Close();
+	arkLib.Destroy();
+
+
+	/*!
+	Constant	Value	Description
+
+	PK_PACK_MOVE_FILES	1	Delete original after packing
+	PK_PACK_SAVE_PATHS	2	Save path names of files
+	PK_PACK_ENCRYPT	4	Ask user for password, then encrypt file with that password
+	*/
+
+	// 4 는 지원하지 않음
+
+	LM_TRACE( L"Flags = %d", Flags );
+
+	return 0;
+}
+
+EXTERN_C UNARKWCX_API int WINAPI DeleteFiles( char *PackedFile, char *DeleteList )
+{
+	LM_TRACE( L"Here" );
+
+	return 0;
+}
+
+EXTERN_C UNARKWCX_API int WINAPI DeleteFilesW( wchar_t *PackedFile, wchar_t *DeleteList )
+{
+	LM_TRACE( L"Here" );
+	return 0;
+}
+
+EXTERN_C UNARKWCX_API void WINAPI ConfigurePacker( HWND Parent, HINSTANCE DllInstance )
+{
+	LM_TRACE( L"Here" );
+
+	DialogBox( DllInstance, MAKEINTRESOURCE(IDD_DLG_OPTIONS), Parent, ConfigurePackerDlgProc );
+}
+
+BOOL CALLBACK ConfigurePackerDlgProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam )
+{
+	switch (message) 
+	{ 
+	case WM_INITDIALOG: 
+		{
+			wchar_t szBuffer[ 128 ] = {0,};
+			GetPrivateProfileString( L"UnArkWCX", L"SelectArchiveExtension", L"ZIP", szBuffer, 128, gConfigureINIFullPath );
+			wcscpy( gCurrentArchiveExtension, szBuffer );
+
+			HWND hCBX_ARCHIVE_TYPE = GetDlgItem( hwndDlg, IDC_CBX_ARCHIVE_TYPE );
+			if( hCBX_ARCHIVE_TYPE != NULL )
+			{
+				SendMessage( hCBX_ARCHIVE_TYPE, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)(L"7Z") );
+				SendMessage( hCBX_ARCHIVE_TYPE, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)(L"ZIP") );
+				SendMessage( hCBX_ARCHIVE_TYPE, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)(L"ISO") );
+
+				SendMessage( hCBX_ARCHIVE_TYPE, CB_SELECTSTRING, (WPARAM)0, (LPARAM)(LPCTSTR)gCurrentArchiveExtension );
+			}
+
+			HWND hTab = GetDlgItem( hwndDlg, IDC_TAB );
+			if( hTab != NULL )
+			{
+				// TabCtrl_SetExtendedStyle( hTab, );
+				TCITEM tabItem;
+
+				tabItem.mask = TCIF_TEXT;
+				tabItem.iImage = -1;
+				tabItem.lParam = NULL;
+				tabItem.pszText = L"7Z";
+				tabItem.cchTextMax = wcslen( L"7Z" );
+				TabCtrl_InsertItem( hTab, 0, &tabItem );
+
+				tabItem.pszText = L"ZIP";
+				tabItem.cchTextMax = wcslen( L"ZIP" );
+				TabCtrl_InsertItem( hTab, 1, &tabItem );
+
+				tabItem.pszText = L"ISO";
+				tabItem.cchTextMax = wcslen( L"ISO" );
+				TabCtrl_InsertItem( hTab, 2, &tabItem );
+			}
+		}
+
+		return TRUE;
+		break;
+
+	case WM_COMMAND: 
+		{
+			switch (LOWORD(wParam)) 
+			{ 
+			case IDOK: 
+				WritePrivateProfileString( L"UnArkWCX", L"SelectArchiveExtension", gCurrentArchiveExtension, gConfigureINIFullPath );
+				
+				// 			if (!GetDlgItemText(hwndDlg, ID_ITEMNAME, szItemName, 80)) 
+				// 				*szItemName=0; 
+
+				// Fall through. 
+
+			case IDCANCEL: 
+				EndDialog(hwndDlg, wParam); 
+				return TRUE; 
+			} 
+		}
+	} 
+	return FALSE; 
+}
+
+EXTERN_C UNARKWCX_API void WINAPI PackSetDefaultParams( PackDefaultParamStruct* dps )
+{
+	LM_TRACE( L"Here" );
+
+	wchar_t szBuffer[ 128 ] = {0,};
+	wcscpy( gConfigureINIFullPath, CA2U( dps->DefaultIniName ).c_str() );
+
+	GetPrivateProfileString( L"UnArkWCX", L"SelectArchiveExtension", L"ZIP", szBuffer, 128, gConfigureINIFullPath );
+	wcscpy( gCurrentArchiveExtension, szBuffer );
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 BOOL32 CArkInfo::Open( LPCWSTR pwszFilePath, LPCWSTR password )
 {
 	BOOL32 bSuccess = FALSE;
 
 	do 
 	{
-		WCHAR wszBuffer[ MAX_PATH ] = {0,};
-
-		GetModuleFileName( g_hInst, wszBuffer, MAX_PATH );
-		PathRemoveFileSpec( wszBuffer );
-		PathAppend( wszBuffer, ARK_DLL_RELEASE_FILE_NAME );
-
-		ARKERR err = arkLib.Create( wszBuffer );
+		ARKERR err = arkLib.Create( gArkDLLFullPathName );
 		
 		if( err != ARKERR_NOERR )
 		{
-			LM_TRACE( "ArkLib Create Failed = %d, %s", err, wszBuffer );
+			LM_TRACE( "ArkLib Create Failed = %d, %s", err, gArkDLLFullPathName );
 			break;
 		}
 
@@ -371,7 +599,6 @@ BOOL32 CArkInfo::Open( LPCWSTR pwszFilePath, LPCWSTR password )
 		bSuccess = arkLib.Open( pwszFilePath, password );
 		
 		LM_TRACE( L"File Open Error Code = %d", arkLib.GetLastError() );
-
 
 	} while (false);
 

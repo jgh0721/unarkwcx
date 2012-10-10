@@ -7,6 +7,14 @@ ReadHeader=_ReadHeader@8
 ;ReadHeaderEx=_ReadHeaderEx@8
 ReadHeaderExW=_ReadHeaderExW@8
 
+PackFiles=_PackFiles@20
+PackFilesW=_PackFilesW@20
+
+DeleteFiles=_DeleteFiles@8
+DeleteFilesW=_DeleteFilesW@8
+
+ConfigurePacker=_ConfigurePacker@8
+
 CloseArchive=_CloseArchive@4
 
 SetChangeVolProc=_SetChangeVolProc@8
@@ -18,7 +26,9 @@ SetProcessDataProcW=_SetProcessDataProcW@8
 ProcessFile=_ProcessFile@16
 ProcessFileW=_ProcessFileW@16
 
-GetPacketCaps=_GetPackerCaps@0
+GetPackerCaps=_GetPackerCaps@0
 
-; CanYouHandleThisFile=_CanYouHandleThisFile@4
+CanYouHandleThisFile=_CanYouHandleThisFile@4
 CanYouHandleThisFileW=_CanYouHandleThisFileW@4
+
+PackSetDefaultParams=_PackSetDefaultParams@4

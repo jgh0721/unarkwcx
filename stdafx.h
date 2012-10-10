@@ -25,6 +25,9 @@
 #include "Library\CommonLogger.h"
 
 
+#include <Shlwapi.h>
+
+#pragma comment( lib, "shlwapi" )
 
 
 // TODO: reference additional headers your program requires here

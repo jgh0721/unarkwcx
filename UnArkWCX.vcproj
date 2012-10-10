@@ -473,7 +473,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\wcxhead.h"
+				RelativePath=".\Library\wcxhead.h"
 				>
 			</File>
 		</Filter>
@@ -488,7 +488,7 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\ReadMe.txt"
+			RelativePath=".\README.rst"
 			>
 		</File>
 	</Files>
