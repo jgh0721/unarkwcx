@@ -1,9 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnArkWCX", "UnArkWCX.vcproj", "{FDAC63E7-1C8B-477E-A374-25C05BD11CFA}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnArkWCX", "UnArkWCX.vcxproj", "{FDAC63E7-1C8B-477E-A374-25C05BD11CFA}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnArkWCX_Test", "UnArkWCX_Test\UnArkWCX_Test.vcproj", "{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnArkWCX_Test", "UnArkWCX_Test\UnArkWCX_Test.vcxproj", "{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,7 +23,8 @@ Global
 		{FDAC63E7-1C8B-477E-A374-25C05BD11CFA}.Release|x64.Build.0 = Release|x64
 		{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}.Debug|Win32.ActiveCfg = Debug|Win32
 		{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}.Debug|Win32.Build.0 = Debug|Win32
-		{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}.Debug|x64.ActiveCfg = Debug|Win32
+		{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}.Debug|x64.ActiveCfg = Debug|x64
+		{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}.Debug|x64.Build.0 = Debug|x64
 		{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}.Release|Win32.ActiveCfg = Release|Win32
 		{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}.Release|Win32.Build.0 = Release|Win32
 		{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}.Release|x64.ActiveCfg = Release|Win32

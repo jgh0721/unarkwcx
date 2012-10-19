@@ -9,7 +9,7 @@ Author : DevTester ( http://jgh0721.homeip.net )
 Development Environment
 =========================
 
-  * Visual Studio 2008 SP1
+  * Visual Studio 2012( Use Visual Studio 2008 SP1 Compiler, So need VS2008 SP1 Installation )
   
   * Ark Library ( http://www.bandisoft.com/ark/ )
   
@@ -18,7 +18,7 @@ Development Environment
 History
 ========
 
-  최종 수정 일 : 2012-10-14
+  최종 수정 일 : 2012-10-XX
 
   참조 : Kipple 님의 Unarkwcx
 
@@ -39,7 +39,9 @@ History
   * 폴더가 포함된 압축파일을 열 때 오류가 발생하는 현상 수정
   
   * 단위테스트를 위해 GoogleTest 1.6.0 도입
-  
+  * 압축 한 후 원본 파일 삭제 기능 구현
+  * Visual Studio 2012 로 솔루션 파일 변경, 빌드는 VS 2008 SP1 을 사용하여 빌드함
+
 0.9 ( 2012-10-XX )
 --------------------
 

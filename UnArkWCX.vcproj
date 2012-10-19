@@ -21,8 +21,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="_build\$(PlatformName)\$(ConfigurationName)\"
+			IntermediateDirectory="_object\$(PlatformName)\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -96,8 +96,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="_build\$(PlatformName)\$(ConfigurationName)\"
+			IntermediateDirectory="_object\$(PlatformName)\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -171,8 +171,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="_build\$(PlatformName)\$(ConfigurationName)\"
+			IntermediateDirectory="_object\$(PlatformName)\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -249,8 +249,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="_build\$(PlatformName)\$(ConfigurationName)\"
+			IntermediateDirectory="_object\$(PlatformName)\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -470,6 +470,10 @@
 			</File>
 			<File
 				RelativePath=".\UnArkWCX.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UnArkWCX_Export.h"
 				>
 			</File>
 			<File

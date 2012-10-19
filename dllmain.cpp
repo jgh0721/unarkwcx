@@ -9,6 +9,8 @@ WCHAR gArkDLLFullPathName[ MAX_PATH ] = {0,};
 WCHAR gCurrentArchiveExtension[ 32 ] = {0,};
 WCHAR gConfigureINIFullPath[ MAX_PATH ] = {0,};
 CArkEvent gClsArkEvent;
+BOOL isInitLogger = FALSE;
+SArkCompressorOpt gArkCompressorOpt;
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -22,21 +24,26 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 			GetModuleFileName( g_hInst, gArkDLLFullPathName, MAX_PATH );
 			PathRemoveFileSpec( gArkDLLFullPathName );
 			PathAppend( gArkDLLFullPathName, ARK_DLL_RELEASE_FILE_NAME );
-			
-// #ifndef UNARKWCX_DEPLOY
-			LM_INSTANCE()->SetLogLevel( LL_TRACE );
-			LM_INSTANCE()->SetLogTransfer( LT_DEBUGGER | LT_STDOUT );
-			LM_INSTANCE()->SetLogPrefix( L"[%D-%t, %l, %F-%L] " );
-// #endif
+
 			break;
 	case DLL_THREAD_ATTACH:
+		break;
 	case DLL_THREAD_DETACH:
+		break;
 	case DLL_PROCESS_DETACH:
-// #ifndef UNARKWCX_DEPLOY
-// //		LM_EXIT();
-// #endif
 		break;
 	}
 	return TRUE;
 }
 
+void InitLogger()
+{
+#ifndef UNARKWCX_DEPLOY
+	if( isInitLogger == FALSE )
+	{
+		LM_INSTANCE()->SetLogLevel( LL_TRACE );
+		LM_INSTANCE()->SetLogTransfer( LT_DEBUGGER );
+		LM_INSTANCE()->SetLogPrefix( L"[%D-%t, %l, %F-%L] " );
+	}
+#endif
+}

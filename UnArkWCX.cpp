@@ -15,6 +15,7 @@
 
 EXTERN_C UNARKWCX_API HANDLE WINAPI OpenArchive( tOpenArchiveData *pArchiveData )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 
 	LM_TRACE( L"압축 파일 열기 시도" );
@@ -38,6 +39,7 @@ EXTERN_C UNARKWCX_API HANDLE WINAPI OpenArchive( tOpenArchiveData *pArchiveData 
 
 EXTERN_C UNARKWCX_API HANDLE WINAPI OpenArchiveW( tOpenArchiveDataW *pArchiveDataW )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 
 	LM_TRACE( L"압축 파일 열기 시도" );
@@ -302,6 +304,7 @@ EXTERN_C UNARKWCX_API int WINAPI CloseArchive( HANDLE hArcData )
 }
 EXTERN_C UNARKWCX_API void WINAPI SetChangeVolProc( HANDLE hArcData, tChangeVolProc pfnChangeVolProc )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 
 // 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
@@ -311,6 +314,7 @@ EXTERN_C UNARKWCX_API void WINAPI SetChangeVolProc( HANDLE hArcData, tChangeVolP
 
 EXTERN_C UNARKWCX_API void WINAPI SetChangeVolProcW( HANDLE hArcData, tChangeVolProcW pfnChangeVolProc )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 
 // 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
@@ -320,6 +324,7 @@ EXTERN_C UNARKWCX_API void WINAPI SetChangeVolProcW( HANDLE hArcData, tChangeVol
 
 EXTERN_C UNARKWCX_API void WINAPI SetProcessDataProc( HANDLE hArcData, tProcessDataProc pfnProcessDataProc )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 
 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
@@ -331,6 +336,7 @@ EXTERN_C UNARKWCX_API void WINAPI SetProcessDataProc( HANDLE hArcData, tProcessD
 
 EXTERN_C UNARKWCX_API void WINAPI SetProcessDataProcW( HANDLE hArcData, tProcessDataProcW pfnProcessDataProc )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 
 	CArkInfo* pArkInfo = reinterpret_cast< CArkInfo* >( hArcData );
@@ -342,6 +348,8 @@ EXTERN_C UNARKWCX_API void WINAPI SetProcessDataProcW( HANDLE hArcData, tProcess
 
 EXTERN_C UNARKWCX_API int WINAPI GetPackerCaps()
 {
+	InitLogger();
+
 	LM_TRACE( L"Here" );
 
 	return 
@@ -355,12 +363,14 @@ EXTERN_C UNARKWCX_API int WINAPI GetPackerCaps()
 
 EXTERN_C UNARKWCX_API BOOL WINAPI CanYouHandleThisFile( char *FileName )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 	return CanYouHandleThisFileW( const_cast< WCHAR * >( CA2U( FileName ).c_str() ) );
 }
 
 EXTERN_C UNARKWCX_API BOOL WINAPI CanYouHandleThisFileW( WCHAR *FileName )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 	BOOL isCanHandle = FALSE;
 
@@ -415,62 +425,97 @@ EXTERN_C UNARKWCX_API int WINAPI PackFiles( char* PackedFile, char* SubPath, cha
 
 EXTERN_C UNARKWCX_API int WINAPI PackFilesW( wchar_t* PackedFile, wchar_t* SubPath, wchar_t* SrcPath, wchar_t* AddList, int Flags )
 {
-	LM_TRACE( L"Here" );
+	int nRetValue = E_NOT_SUPPORTED;		// 0 == SUCCESS
 
-	std::wstring strSrcPath = SrcPath;
-
-	std::vector< std::wstring > vecAddFile;
-
-	LM_TRACE( L"Packed Files = %s", PackedFile );
-	if( SubPath != NULL )
-	{
-		LM_TRACE( L"Sub Path = %s", SubPath );
-	}
-	LM_TRACE( L"Src Path = %s", SrcPath );
+	CArkLib arkLib;
+	IArkCompressor* pCompressor = NULL;
+	std::wstring strSrcPath, strDstPath;
+	std::vector< std::wstring > vecAddFile, vecSrcFile;
+	
+	LM_TRACE( L"Parameter, Packed Files = %s||Sub Path = %s||Src Path = %s", PackedFile, SubPath, SrcPath );
 
 	for( wchar_t* pwszCurrent = AddList; *pwszCurrent != 0; pwszCurrent += wcslen( pwszCurrent ) + 1)
 	{
 		vecAddFile.push_back( pwszCurrent );
-		LM_TRACE( L"Add List = %s", pwszCurrent );
+		LM_TRACE( L"Parameter, Add List = %s", pwszCurrent );
 	}
 
-	CArkLib arkLib;
-	arkLib.Create( gArkDLLFullPathName );
+	LM_TRACE( L"Parameter, Flags = %d", Flags );
 
-	IArkCompressor* pCompressor = arkLib.CreateCompressor();
-	pCompressor->Init();
-	pCompressor->SetEvent( &gClsArkEvent );
-	SArkCompressorOpt opt;
-	opt.Init();
-	opt.ff = ARK_FF_ISO;
-	pCompressor->SetOption( opt, NULL, 0 );
-
-	for( size_t idx = 0; idx < vecAddFile.size(); ++idx )
+	do 
 	{
-		pCompressor->AddFileItem( (std::wstring( SrcPath ) + vecAddFile[idx]).c_str(), vecAddFile[idx].c_str(), FALSE );
+		if( arkLib.Create( gArkDLLFullPathName ) != ARKERR_NOERR )
+		{
+			LM_ERROR( L"Ark Library Create Instance Failed = %d, %x, SYS ERROR = %E", arkLib.GetLastError(), arkLib.GetLastError(), arkLib.GetLastSystemError() );
+			nRetValue = E_NOT_SUPPORTED;
+			break;
+		}
+
+		pCompressor = arkLib.CreateCompressor();
+		if( pCompressor == NULL )
+		{
+			LM_ERROR( L"Ark Library Create Compressor Instance Failed" );
+			nRetValue = E_NOT_SUPPORTED;
+			break;
+		}
+
+		pCompressor->Init();
+		pCompressor->SetEvent( &gClsArkEvent );
+		if( pCompressor->SetOption( gArkCompressorOpt, NULL, 0 ) == FALSE )
+		{
+			LM_ERROR( L"Ark Library Set Option Failed = %d, %x, SYS ERROR = %E", arkLib.GetLastError(), arkLib.GetLastError(), arkLib.GetLastSystemError() );
+			nRetValue = E_NOT_SUPPORTED;
+			break;
+		}
+
+		for( size_t idx = 0; idx < vecAddFile.size(); ++idx )
+		{
+			strSrcPath = SrcPath;
+			if( *strSrcPath.rbegin() != L'\\' )
+				strSrcPath += L"\\" + vecAddFile[ idx ];
+			else
+				strSrcPath += vecAddFile[ idx ];
+
+			if( SubPath != NULL && SubPath[ wcslen( SubPath ) - 1 ] != L'\\' )
+				strDstPath = SubPath + vecAddFile[idx];
+			else if( SubPath != NULL && SubPath[ wcslen( SubPath ) - 1 ] == L'\\' )
+				strDstPath = SubPath + std::wstring( L"\\" ) + vecAddFile[idx];
+			else
+				strDstPath = vecAddFile[idx];
+
+			vecSrcFile.push_back( strSrcPath );
+			pCompressor->AddFileItem( strSrcPath.c_str(), strDstPath.c_str(), FALSE );
+		}
+
+		if( pCompressor->CreateArchive( PackedFile ) == FALSE )
+		{
+			LM_ERROR( L"ERROR = %d, %x", pCompressor->GetLastError(), pCompressor->GetLastError() );
+			nRetValue = E_ECREATE;
+			break;
+		}
+		else
+		{
+			if( Flags == PK_PACK_MOVE_FILES )
+			{
+				for( size_t idx = 0; idx < vecSrcFile.size(); ++idx )
+					DeleteFile( vecSrcFile[idx].c_str() );
+			}
+		}
+
+		nRetValue = 0;
+
+	} while (false);
+
+	if( pCompressor != NULL )
+		pCompressor->Release();
+
+	if( arkLib.IsCreated() != FALSE )
+	{
+		arkLib.Close();
+		arkLib.Destroy();
 	}
 
-	pCompressor->CreateArchive( PackedFile );
-
-	pCompressor->Release();
-
-	arkLib.Close();
-	arkLib.Destroy();
-
-
-	/*!
-	Constant	Value	Description
-
-	PK_PACK_MOVE_FILES	1	Delete original after packing
-	PK_PACK_SAVE_PATHS	2	Save path names of files
-	PK_PACK_ENCRYPT	4	Ask user for password, then encrypt file with that password
-	*/
-
-	// 4 는 지원하지 않음
-
-	LM_TRACE( L"Flags = %d", Flags );
-
-	return 0;
+	return nRetValue;
 }
 
 EXTERN_C UNARKWCX_API int WINAPI DeleteFiles( char *PackedFile, char *DeleteList )
@@ -488,6 +533,7 @@ EXTERN_C UNARKWCX_API int WINAPI DeleteFilesW( wchar_t *PackedFile, wchar_t *Del
 
 EXTERN_C UNARKWCX_API void WINAPI ConfigurePacker( HWND Parent, HINSTANCE DllInstance )
 {
+	InitLogger();
 	LM_TRACE( L"Here" );
 
 	DialogBox( DllInstance, MAKEINTRESOURCE(IDD_DLG_OPTIONS), Parent, ConfigurePackerDlgProc );
@@ -500,7 +546,7 @@ BOOL CALLBACK ConfigurePackerDlgProc( HWND hwndDlg, UINT message, WPARAM wParam,
 	case WM_INITDIALOG: 
 		{
 			wchar_t szBuffer[ 128 ] = {0,};
-			GetPrivateProfileString( L"UnArkWCX", L"SelectArchiveExtension", L"ZIP", szBuffer, 128, gConfigureINIFullPath );
+			GetPrivateProfileString( CONFIGURE_INI_SECNAME, CONFIGURE_SELECT_EXTENSION, L"ZIP", szBuffer, 128, gConfigureINIFullPath );
 			wcscpy( gCurrentArchiveExtension, szBuffer );
 
 			HWND hCBX_ARCHIVE_TYPE = GetDlgItem( hwndDlg, IDC_CBX_ARCHIVE_TYPE );
@@ -562,13 +608,73 @@ BOOL CALLBACK ConfigurePackerDlgProc( HWND hwndDlg, UINT message, WPARAM wParam,
 
 EXTERN_C UNARKWCX_API void WINAPI PackSetDefaultParams( PackDefaultParamStruct* dps )
 {
+	InitLogger();
+
 	LM_TRACE( L"Here" );
 
-	wchar_t szBuffer[ 128 ] = {0,};
 	wcscpy( gConfigureINIFullPath, CA2U( dps->DefaultIniName ).c_str() );
 
-	GetPrivateProfileString( L"UnArkWCX", L"SelectArchiveExtension", L"ZIP", szBuffer, 128, gConfigureINIFullPath );
+	SetCompressorOptFromINI();
+
+}
+
+void SetCompressorOptFromINI()
+{
+	gArkCompressorOpt.Init();
+
+	wchar_t szBuffer[ 128 ] = {0,};
+	ARK_COMPRESSION_METHOD defaultMethod;
+
+	// 압축 형식 설정
+	GetPrivateProfileString( CONFIGURE_INI_SECNAME, CONFIGURE_SELECT_EXTENSION, L"ZIP", szBuffer, 128, gConfigureINIFullPath );
 	wcscpy( gCurrentArchiveExtension, szBuffer );
+	
+	if( wcsicmp( gCurrentArchiveExtension, L"ZIP" ) == 0 )
+	{
+		gArkCompressorOpt.ff = ARK_FF_ZIP;
+		defaultMethod = ARK_COMPRESSION_METHOD_DEFLATE;
+	}
+	else if( wcsicmp( gCurrentArchiveExtension, L"ISO" ) == 0 )
+	{
+		gArkCompressorOpt.ff = ARK_FF_ISO;
+	}
+	else if( wcsicmp( gCurrentArchiveExtension, L"7Z" ) == 0 )
+	{
+		gArkCompressorOpt.ff = ARK_FF_7Z;
+		defaultMethod = ARK_COMPRESSION_METHOD_LZMA2;
+	}
+	else if( wcsicmp( gCurrentArchiveExtension, L"LZH" ) == 0 )
+	{
+		gArkCompressorOpt.ff = ARK_FF_7Z;
+		defaultMethod = ARK_COMPRESSION_METHOD_LH6;
+	}
+
+	gArkCompressorOpt.saveNTFSTime				= GetPrivateProfileInt( CONFIGURE_INI_SECNAME, CONFIGURE_SaveNTFSTimeForZIP, 0, gConfigureINIFullPath );
+	gArkCompressorOpt.streamOutput				= FALSE;
+
+	gArkCompressorOpt.compressionMethod			= (ARK_COMPRESSION_METHOD)GetPrivateProfileInt( CONFIGURE_INI_SECNAME, CONFIGURE_CompressionMerhod, defaultMethod, gConfigureINIFullPath );
+	gArkCompressorOpt.encryptionMethod			= ARK_ENCRYPTION_METHOD_ZIP;			
+
+	gArkCompressorOpt.compressionLevel			= GetPrivateProfileInt( CONFIGURE_INI_SECNAME, CONFIGURE_CompressionLevel, -1, gConfigureINIFullPath );			
+	if( gArkCompressorOpt.compressionLevel < -1 || gArkCompressorOpt.compressionLevel > 9 )
+		gArkCompressorOpt.compressionLevel = -1;
+
+	gArkCompressorOpt.splitSize					= 0;					
+	gArkCompressorOpt.forceZip64				= FALSE;	
+	gArkCompressorOpt.useDosTime2PasswordCheck	= FALSE;	
+	gArkCompressorOpt.sfxPathName				= NULL;				
+	gArkCompressorOpt.forceUtf8FileName			= TRUE;			
+	gArkCompressorOpt.forceUtf8Comment			= FALSE;			
+	gArkCompressorOpt.utf8FileNameIfNeeded		= TRUE;		
+	gArkCompressorOpt.bypassWhenUncompressible	= TRUE;	
+	gArkCompressorOpt.lzmaEncodeThreadCount		= 2;		
+	gArkCompressorOpt.enableMultithreadDeflate	= TRUE;	
+	gArkCompressorOpt.deflateEncodeThreadCount	= 0;	
+
+	gArkCompressorOpt._7zCompressHeader			= FALSE;			
+	gArkCompressorOpt._7zEncryptHeader			= FALSE;			
+	gArkCompressorOpt.lzma2NumBlockThreads		= 2;		
+	gArkCompressorOpt.threadPriority			= THREAD_PRIORITY_NORMAL;				
 }
 
 //////////////////////////////////////////////////////////////////////////
