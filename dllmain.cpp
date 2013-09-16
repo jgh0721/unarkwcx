@@ -21,9 +21,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 			g_hInst = hModule;
-			GetModuleFileName( g_hInst, gArkDLLFullPathName, MAX_PATH );
-			PathRemoveFileSpec( gArkDLLFullPathName );
-			PathAppend( gArkDLLFullPathName, ARK_DLL_RELEASE_FILE_NAME );
+			GetModuleFileNameW( g_hInst, gArkDLLFullPathName, MAX_PATH );
+			PathRemoveFileSpecW( gArkDLLFullPathName );
+			PathAppendW( gArkDLLFullPathName, ARK_DLL_RELEASE_FILE_NAME );
 
 			break;
 	case DLL_THREAD_ATTACH:

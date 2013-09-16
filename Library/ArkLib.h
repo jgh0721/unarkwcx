@@ -18,23 +18,23 @@
 #ifdef _WIN64
 #	ifdef _DEBUG
 #		define ARK_DLL_FILE_NAME				_T("Ark64_d.dll")
-#		define ARKUNZIP_DLL_FILE_NAME			_T("ArkUnzip64_d.dll")
+#		define ARKZIP_DLL_FILE_NAME				_T("ArkZip64_d.dll")
 #	else
 #		define ARK_DLL_FILE_NAME				_T("Ark64.dll")
-#		define ARKUNZIP_DLL_FILE_NAME			_T("ArkUnzip64.dll")
+#		define ARKZIP_DLL_FILE_NAME				_T("ArkZip64.dll")
 #	endif
 #	define ARK_DLL_RELEASE_FILE_NAME			_T("Ark64.dll")
-#	define ARKUNZIP_DLL_RELEASE_FILE_NAME		_T("ArkUnzip64.dll")
+#	define ARKZIP_DLL_RELEASE_FILE_NAME			_T("ArkZip64.dll")
 #elif defined(_WIN32)
 #	ifdef _DEBUG
 #		define ARK_DLL_FILE_NAME				_T("Ark32_d.dll")
-#		define ARKUNZIP_DLL_FILE_NAME			_T("ArkUnzip32_d.dll")
+#		define ARKZIP_DLL_FILE_NAME				_T("ArkZip32_d.dll")
 #	else
 #		define ARK_DLL_FILE_NAME				_T("Ark32.dll")
-#		define ARKUNZIP_DLL_FILE_NAME			_T("ArkUnzip32.dll")
+#		define ARKZIP_DLL_FILE_NAME				_T("ArkZip32.dll")
 #	endif
 #	define ARK_DLL_RELEASE_FILE_NAME			_T("Ark32.dll")
-#	define ARKUNZIP_DLL_RELEASE_FILE_NAME		_T("ArkUnzip32.dll")
+#	define ARKZIP_DLL_RELEASE_FILE_NAME			_T("ArkZip32.dll")
 #endif
 
 #ifndef _WIN32
@@ -86,8 +86,6 @@ typedef IArkCompressor* (*LPCREATEARKCOMPRESSOR)(UINT32 version);
 #   include <stdio.h>
 #	define ASSERT(x)	printf("Assert at %s %d\n", __FILE__, __LINE__)
 #endif
-
-
 
 
 class CArkLib : public IArk
@@ -237,7 +235,7 @@ public :				// IArk
 	{
 		return m_pArk ? m_pArk->Open(filePath, password) : FALSE;
 	}
-	ARKMETHOD(BOOL32)			Open(BYTE* src, int srcLen, LPCWSTR password=NULL)
+	ARKMETHOD(BOOL32)			Open(ARKBYTE* src, int srcLen, LPCWSTR password=NULL)
 	{
 		return m_pArk ? m_pArk->Open(src, srcLen, password) : FALSE;
 	}
@@ -342,7 +340,7 @@ public :				// IArk
 	{
 		return m_pArk ? m_pArk->ExtractOneTo(index, pOutStream) : FALSE;
 	}
-	ARKMETHOD(BOOL32)			ExtractOneTo(int index, BYTE* outBuf, int outBufLen)
+	ARKMETHOD(BOOL32)			ExtractOneTo(int index, ARKBYTE* outBuf, int outBufLen)
 	{
 		return m_pArk ? m_pArk->ExtractOneTo(index, outBuf, outBufLen) : FALSE;
 	}
@@ -448,6 +446,16 @@ public :				// IArk
 		return m_pArk ?m_pArk->GetMultivolStyle() : ARK_MULTIVOL_STYLE_NONE;
 	}
 
+	ARKMETHOD(int)				GetMultivolCount() const
+	{
+		return m_pArk ?m_pArk->GetMultivolCount() : 0;
+	}
+
+	ARKMETHOD(LPCWSTR)			GetMultivolFilePathName(int volume) const
+	{
+		return m_pArk ?m_pArk->GetMultivolFilePathName(volume) : NULL;
+	}
+
 	ARKMETHOD(BOOL32)			DetectCurrentArchivesCodepage(SArkDetectCodepage& dcp) const
 	{
 		return m_pArk ?m_pArk->DetectCurrentArchivesCodepage(dcp) : FALSE;
@@ -492,6 +500,10 @@ public :				// IArk
 	ARKMETHOD(void*)			_GetInStream()
 	{
 		return  m_pArk ? m_pArk->_GetInStream(): NULL;
+	}
+	ARKMETHOD(BOOL32)			_DisableItem(int index)
+	{
+		return  m_pArk ? m_pArk->_DisableItem(index): FALSE;
 	}
 
 	ARKMETHOD(void)				_Test()
