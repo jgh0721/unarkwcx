@@ -412,11 +412,14 @@ EXTERN_C UNARKWCX_API int __stdcall ReadHeaderExW( HANDLE hArcData, tHeaderDataE
         if( pItem->attrib & ARK_FILEATTR_DIRECTORY )
             HeaderDataExW->FileAttr |= 0x10;
         if( pItem->attrib & ARK_FILEATTR_FILE )
-            HeaderDataExW->FileAttr |= 0x3F;
+            HeaderDataExW->FileAttr |= 0x20;
         if( pItem->attrib & ARK_FILEATTR_HIDDEN )
             HeaderDataExW->FileAttr |= 0x2;
         if( pItem->attrib & ARK_FILEATTR_READONLY )
             HeaderDataExW->FileAttr |= 0x1;
+        if( (pItem->attrib & ARK_FILEATTR_FILE) == 0 &&
+            (pItem->attrib & ARK_FILEATTR_DIRECTORY) == 0 )
+            HeaderDataExW->FileAttr = 0x20;
 
         struct tm* tmCurrentTime = _localtime64( &pItem->fileTime );
         if( tmCurrentTime != NULL )
