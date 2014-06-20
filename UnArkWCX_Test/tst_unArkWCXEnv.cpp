@@ -268,7 +268,7 @@ wchar_t* CUnArkMgr::convertVectorToAddList( const std::vector< std::wstring >& v
 
     do
     {
-        int nAddListLength = 0;
+        size_t nAddListLength = 0;
         for( size_t idx = 0; idx < vecAddList.size(); ++idx )
         {
             nAddListLength += vecAddList[ idx ].size();
