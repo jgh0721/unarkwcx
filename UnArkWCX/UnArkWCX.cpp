@@ -644,7 +644,31 @@ EXTERN_C UNARKWCX_API int __stdcall PackFilesW( wchar_t* PackedFile, wchar_t* Su
         if( bSuccess == FALSE )
             break;
 
-        if( pCompressor->CreateArchive( PackedFile ) == FALSE )
+        std::wstring packedFilePath( PackedFile );
+        std::wstring packerExtension;
+        for( size_t idx = 0; idx < VecCompressionFormat.size(); ++idx )
+        {
+            if( gArkCompressorOpt.ff == VecCompressionFormat[ idx ].first )
+            {
+                packerExtension = CA2U( VecCompressionFormat[ idx ].second );
+                break;
+            }
+        }   
+
+        wchar_t* extension = PathFindExtensionW( PackedFile );
+        if( wcsicmp( extension, packerExtension.c_str() ) != 0 )
+        {
+            if( endWith( packedFilePath, PACKER_EXTENSION ) == true )
+            {
+                packedFilePath = string_replace_all( packedFilePath, L"." + PACKER_EXTENSION, L"." + packerExtension );
+            }
+            else
+            {
+                packedFilePath += L"." + packerExtension;
+            }
+        }
+
+        if( pCompressor->CreateArchive( packedFilePath.c_str() ) == FALSE )
         {
             nRetValue = E_ECREATE;
             break;

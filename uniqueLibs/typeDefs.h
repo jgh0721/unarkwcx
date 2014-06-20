@@ -224,6 +224,7 @@ typedef std::map< ARK_FF, SUPPORT_FEATURES > TyMapFileFormatToFeatures;
 
 const std::wstring CONFIG_FILENAME = L"UnArkWCX.xml";
 const std::wstring CONFIG_EXENAME = L"UnArkWCX_Opts.exe";
+const std::wstring PACKER_EXTENSION = L"ARKWCX";
 
 const tagXMLItemV2< std::string > OPT_COMPRESSION_FORMAT    = { "/UnArkWCX/compressionFormat", PrFormatZIPToDesc.second };
 const tagXMLItemV2< std::string > OPT_COMPRESSION_METHOD    = { "/UnArkWCX/compressionMethod", "DEFLATE" };
