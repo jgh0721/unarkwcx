@@ -7,60 +7,177 @@
     </Filter>
     <Filter Include="헤더 파일">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="라이브러리">
-      <UniqueIdentifier>{d41658e5-9552-4baa-ac20-f57901f4ec57}</UniqueIdentifier>
+    <Filter Include="externalLibs">
+      <UniqueIdentifier>{fd75ff88-f6a2-42d5-96d7-60ce626e3a86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externalLibs\googleTest">
+      <UniqueIdentifier>{ae750a2c-08cb-4346-8188-9e57fe6751b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="commonLibs">
+      <UniqueIdentifier>{0223b927-becd-4e2c-bbe0-c70507ead591}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="UnArkWCX_Test.cpp">
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest.cc">
+      <Filter>externalLibs\googleTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-death-test.cc">
+      <Filter>externalLibs\googleTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-filepath.cc">
+      <Filter>externalLibs\googleTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-port.cc">
+      <Filter>externalLibs\googleTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-printers.cc">
+      <Filter>externalLibs\googleTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-test-part.cc">
+      <Filter>externalLibs\googleTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-typed-test.cc">
+      <Filter>externalLibs\googleTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnConcurrent.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnConverter.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnDateTime.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnFormatter.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnLogger.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnNetwork.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnPath.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnPCInfo.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnUtils.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnWinUtils.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\commonXMLMapperV2.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\pugixml.cpp">
+      <Filter>externalLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="tst_unArkWCXEnv.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="UnArkWCX_Test_Util.cpp">
+    <ClCompile Include="tst_unArkWCX.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Library\CommonUtil.cpp">
-      <Filter>라이브러리</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Library\ConvertStr.cpp">
-      <Filter>라이브러리</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="..\externalLibs\GoogleTest\src\gtest-internal-inl.h">
+      <Filter>externalLibs\googleTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnConcurrent.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnConverter.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnDateTime.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Converter.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Float.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Format.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Integer.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Logger.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Parse.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Renderder.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_String.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Utils.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatterC++11.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatterC++98.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnLogger.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnNetwork.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnPath.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnPCInfo.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnUtils.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnWinUtils.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\commonXMLMapperV2.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\pugiconfig.hpp">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\pugixml.hpp">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="tst_unArkWCXEnv.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\UnArkWCX_Export.h">
+    <ClInclude Include="tst_unArkWCX.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="UnArkWCX_Test.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="UnArkWCX_Test_Util.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Library\wcxhead.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Library\CommonUtil.h">
-      <Filter>라이브러리</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Library\ConvertStr.h">
-      <Filter>라이브러리</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>

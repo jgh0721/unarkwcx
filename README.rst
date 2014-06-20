@@ -9,7 +9,8 @@ Author : DevTester ( http://jgh0721.homeip.net )
 Development Environment
 =========================
 
-  * Visual Studio 2012( Use Visual Studio 2008 SP1 Compiler, So need VS2008 SP1 Installation )
+  * Visual Studio 2013
+  * Qt > Ver 5.X
   
   * Ark Library ( http://www.bandisoft.com/ark/ )
   
@@ -18,9 +19,17 @@ Development Environment
 History
 ========
 
-  최종 수정 일 : 2012-10-XX
+  최종 수정 일 : 2014-06-XX
 
   참조 : Kipple 님의 Unarkwcx
+
+2.0 ( 2014-06-XX )
+--------------------
+
+  * Updated : Ark Library 5.0.5.6
+
+  * Added : Configuration Utility
+  * Added : Delete Files From Archive
 
 1.0 ( 2012-10-XX )
 --------------------

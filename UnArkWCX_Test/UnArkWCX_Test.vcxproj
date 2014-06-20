@@ -1,216 +1,159 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8DEB0BC1-BD4E-4F86-9182-055DD7FBCEC7}</ProjectGuid>
+    <ProjectGuid>{BAA10AFD-E1F1-4EA3-BD2A-10EC96F0CD5B}</ProjectGuid>
     <RootNamespace>UnArkWCX_Test</RootNamespace>
-    <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v90</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v90</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup>
-    <_ProjectFileVersion>11.0.50929.0</_ProjectFileVersion>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\_build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>..\_object\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\_build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>..\_object\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
+    <IntDir>..\_object\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>..\_build\$(PlatformTarget)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\_build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>..\_object\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\_build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>..\_object\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
-    <GenerateManifest>false</GenerateManifest>
+    <IntDir>..\_object\$(ProjectName)\$(PlatformTarget)\$(Configuration)\</IntDir>
+    <OutDir>..\_build\$(PlatformTarget)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../Library;../Library/gtest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>-Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(BOOST_DIR);$(SolutionDir)\commonLibs;$(SolutionDir)\externalLibs;$(SolutionDir)\externalLibs\googleTest;$(SolutionDir)\externalLibs\googleTest\include;$(SolutionDir)\UniqueLibs;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>../Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(BOOST_DIR)\lib\x86</AdditionalLibraryDirectories>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>copy "..\Libs\*.dll" "..\_build\$(Platform)\$(Configuration)"</Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;../Library;../Library/gtest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>../Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-    <PostBuildEvent>
-      <Command>copy "..\Libs\*.dll" "..\_build\$(Platform)\$(Configuration)"</Command>
+      <Command>Copy "$(TargetPath)" "$(SolutionDir)\test\"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.;../Library;../Library/gtest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>-Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(BOOST_DIR);$(SolutionDir)\commonLibs;$(SolutionDir)\externalLibs;$(SolutionDir)\externalLibs\googleTest;$(SolutionDir)\externalLibs\googleTest\include;$(SolutionDir)\UniqueLibs;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>../Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX86</TargetMachine>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(BOOST_DIR)\lib\x86</AdditionalLibraryDirectories>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>copy "..\Libs\*.dll" "..\_build\$(Platform)\$(Configuration)"</Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.;../Library;../Library/gtest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>../Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-    <PostBuildEvent>
-      <Command>copy "..\Libs\*.dll" "..\_build\$(Platform)\$(Configuration)"</Command>
+      <Command>Copy "$(TargetPath)" "$(SolutionDir)\test\"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\commonLibs\cmnConcurrent.cpp" />
+    <ClCompile Include="..\commonLibs\cmnConverter.cpp" />
+    <ClCompile Include="..\commonLibs\cmnDateTime.cpp" />
+    <ClCompile Include="..\commonLibs\cmnFormatter.cpp" />
+    <ClCompile Include="..\commonLibs\cmnLogger.cpp" />
+    <ClCompile Include="..\commonLibs\cmnNetwork.cpp" />
+    <ClCompile Include="..\commonLibs\cmnPath.cpp" />
+    <ClCompile Include="..\commonLibs\cmnPCInfo.cpp" />
+    <ClCompile Include="..\commonLibs\cmnUtils.cpp" />
+    <ClCompile Include="..\commonLibs\cmnWinUtils.cpp" />
+    <ClCompile Include="..\commonLibs\commonXMLMapperV2.cpp" />
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-death-test.cc" />
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-filepath.cc" />
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-port.cc" />
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-printers.cc" />
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-test-part.cc" />
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest-typed-test.cc" />
+    <ClCompile Include="..\externalLibs\GoogleTest\src\gtest.cc" />
+    <ClCompile Include="..\externalLibs\pugixml.cpp" />
+    <ClCompile Include="main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UnArkWCX_Test.cpp" />
-    <ClCompile Include="UnArkWCX_Test_Util.cpp" />
-    <ClCompile Include="..\Library\CommonUtil.cpp" />
-    <ClCompile Include="..\Library\ConvertStr.cpp" />
+    <ClCompile Include="tst_unArkWCX.cpp" />
+    <ClCompile Include="tst_unArkWCXEnv.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\commonLibs\cmnConcurrent.h" />
+    <ClInclude Include="..\commonLibs\cmnConverter.h" />
+    <ClInclude Include="..\commonLibs\cmnDateTime.h" />
+    <ClInclude Include="..\commonLibs\cmnFormatter.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatterC++11.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatterC++98.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_Converter.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_Float.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_Format.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_Integer.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_Logger.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_Parse.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_Renderder.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_String.hpp" />
+    <ClInclude Include="..\commonLibs\cmnFormatter_Utils.hpp" />
+    <ClInclude Include="..\commonLibs\cmnLogger.hpp" />
+    <ClInclude Include="..\commonLibs\cmnNetwork.h" />
+    <ClInclude Include="..\commonLibs\cmnPath.h" />
+    <ClInclude Include="..\commonLibs\cmnPCInfo.h" />
+    <ClInclude Include="..\commonLibs\cmnUtils.h" />
+    <ClInclude Include="..\commonLibs\cmnWinUtils.h" />
+    <ClInclude Include="..\commonLibs\commonXMLMapperV2.h" />
+    <ClInclude Include="..\externalLibs\GoogleTest\src\gtest-internal-inl.h" />
+    <ClInclude Include="..\externalLibs\pugiconfig.hpp" />
+    <ClInclude Include="..\externalLibs\pugixml.hpp" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="..\UnArkWCX_Export.h" />
-    <ClInclude Include="UnArkWCX_Test.h" />
-    <ClInclude Include="UnArkWCX_Test_Util.h" />
-    <ClInclude Include="..\Library\wcxhead.h" />
-    <ClInclude Include="..\Library\CommonUtil.h" />
-    <ClInclude Include="..\Library\ConvertStr.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
+    <ClInclude Include="tst_unArkWCX.h" />
+    <ClInclude Include="tst_unArkWCXEnv.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

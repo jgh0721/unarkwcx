@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{e7e7d0fe-80f6-4d9f-ab01-510c9f7be24d}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{ca3d3dcf-51c0-4a13-a44f-b705cab5f0ed}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="commonLibs">
+      <UniqueIdentifier>{ab06e457-f4b2-4931-9e45-8b4b1d38e9cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externalLibs">
+      <UniqueIdentifier>{494d76a5-9b8c-4497-84aa-84bfd87ea31b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unarkwcx_opts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_unarkwcx_opts.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_unarkwcx_opts.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_unarkwcx_opts.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnConcurrent.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnConverter.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnDateTime.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnFormatter.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnLogger.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnNetwork.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnPath.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnPCInfo.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnUtils.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnWinUtils.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\commonXMLMapperV2.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\pugixml.cpp">
+      <Filter>externalLibs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_unarkwcx_opts.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnConcurrent.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnConverter.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnDateTime.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Converter.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Float.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Format.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Integer.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Logger.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Parse.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Renderder.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_String.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Utils.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatterC++11.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatterC++98.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnLogger.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnNetwork.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnPath.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnPCInfo.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnUtils.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnWinUtils.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\commonXMLMapperV2.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\pugiconfig.hpp">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\pugixml.hpp">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uniqueLibs\typeDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\EnumString.h">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="unarkwcx_opts.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unarkwcx_opts.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="unarkwcx_opts.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UnArkWCX_Opts.rc" />
+  </ItemGroup>
+</Project>

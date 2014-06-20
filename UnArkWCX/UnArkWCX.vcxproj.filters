@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="commonLibs">
+      <UniqueIdentifier>{5784a8e5-6497-4445-b551-9578906fd2c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="externalLibs">
+      <UniqueIdentifier>{4aac875f-3dc2-4f5c-8804-10fab8661a3a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UnArkWCX.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnConcurrent.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnConverter.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnDateTime.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Converter.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Float.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Format.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Integer.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Logger.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Parse.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Renderder.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_String.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatter_Utils.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatterC++11.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnFormatterC++98.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnLogger.hpp">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnNetwork.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnPath.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnPCInfo.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnUtils.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\cmnWinUtils.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uniqueLibs\typeDefs.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\pugiconfig.hpp">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\pugixml.hpp">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\commonLibs\commonXMLMapperV2.h">
+      <Filter>commonLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="UnArkWCX_Export.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\Ark.h">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\externalLibs\ArkLib.h">
+      <Filter>externalLibs</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UnArkWCX.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnConcurrent.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnConverter.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnDateTime.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnFormatter.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnLogger.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnNetwork.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnPath.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnPCInfo.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnUtils.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\cmnWinUtils.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\externalLibs\pugixml.cpp">
+      <Filter>externalLibs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\commonLibs\commonXMLMapperV2.cpp">
+      <Filter>commonLibs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="UnArkWCX.def">
+      <Filter>소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
