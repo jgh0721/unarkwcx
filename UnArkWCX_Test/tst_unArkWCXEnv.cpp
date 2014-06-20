@@ -197,6 +197,68 @@ bool CUnArkMgr::CallPackFiles( const std::wstring& packedFile, const std::wstrin
     return isSuccess;
 }
 
+bool CUnArkMgr::ListFilesInArchive( const std::wstring& packedFile, std::vector< tHeaderDataExW >& vecHeaderItem )
+{
+    bool isSuccess = false;
+    tOpenArchiveDataW archiveData;
+
+    do 
+    {
+        if( fnOpenArchiveW == NULLPTR )
+            fnOpenArchiveW = (pfnOpenArchiveW)GetProcAddress( hUnArkWCX, "OpenArchiveW" );
+
+        if( fnOpenArchiveW == NULLPTR )
+            break;
+
+        if( fnReadHeaderExW == NULLPTR )
+            fnReadHeaderExW = (pfnReadHeaderExW)GetProcAddress( hUnArkWCX, "ReadHeaderExW" );
+
+        if( fnReadHeaderExW == NULLPTR )
+            break;
+
+        if( fnCloseArchive == NULLPTR )
+            fnCloseArchive = (pfnCloseArchive)GetProcAddress( hUnArkWCX, "CloseArchive" );
+
+        if( fnCloseArchive == NULLPTR )
+            break;
+
+        archiveData.ArcName = wcsdup(packedFile.c_str() );
+        archiveData.CmtBuf = NULL;
+        archiveData.CmtBufSize = 0;
+        archiveData.CmtSize = 0;
+        archiveData.CmtState = 0;
+        archiveData.OpenMode = PK_OM_LIST;
+        archiveData.OpenResult = 0;
+
+        HANDLE hArchive = fnOpenArchiveW( &archiveData );
+        if( hArchive == NULL )
+            break;
+
+        tHeaderDataExW headerDataExW;
+        int nRet = 0;
+        while( (( nRet = fnReadHeaderExW( hArchive, &headerDataExW ) ) == 0) && (nRet != E_END_ARCHIVE) )
+        {
+            vecHeaderItem.push_back( headerDataExW );
+            memset( &headerDataExW, '\0', sizeof( tHeaderDataExW ) );
+        }
+
+        fnCloseArchive( hArchive );
+        hArchive = NULL;
+
+        isSuccess = true;
+    } while (false);
+
+    if( archiveData.ArcName != NULLPTR )
+        free( archiveData.ArcName );
+
+    return isSuccess;
+}
+
+void CUnArkMgr::PrintHeaderItem( tHeaderDataExW& headerDataEx )
+{
+    std::wcout << headerDataEx.FileName << std::endl;
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 wchar_t* CUnArkMgr::convertVectorToAddList( const std::vector< std::wstring >& vecAddList )

@@ -25,7 +25,7 @@ namespace nsCommon
 
 #ifdef USE_SHELL_SUPPORT
         std::wstring                CanonicalizePath( const std::wstring& strPath );
-        std::wstring                GetCurrentPath();
+        std::wstring                GetCurrentPath( HMODULE hModule = NULL );
         std::wstring                GetShellFolders( int nFolder = 0x001c /*CSIDL_LOCAL_APPDATA*/ );
         std::wstring                GetDefaultBrowserPath();
         /*!

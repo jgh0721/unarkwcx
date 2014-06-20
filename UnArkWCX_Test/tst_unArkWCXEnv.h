@@ -43,6 +43,9 @@ public:
     bool                CallPackSetDefaultParams();
     bool                CallPackFiles( const std::wstring& packedFile, const std::wstring& subPath, const std::wstring& srcPath, const std::vector< std::wstring >& addList, int Flags );
 
+    bool                ListFilesInArchive( const std::wstring& packedFile, std::vector< tHeaderDataExW >& vecHeaderItem );
+    void                PrintHeaderItem( tHeaderDataExW& headerDataEx );
+
 private:
     wchar_t*                                convertVectorToAddList( const std::vector< std::wstring >& vecAddList );
 

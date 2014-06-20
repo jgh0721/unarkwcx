@@ -152,16 +152,16 @@ EXTERN_C UNARKWCX_API int WINAPI GetBackgroundFlags( void )
 
 EXTERN_C UNARKWCX_API void WINAPI PackSetDefaultParams( PackDefaultParamStruct* dps )
 {
-    gArkCompressorOpt.Init();
-
-    wcsncpy_s( gConfigureINIFullPath, MAX_PATH - 1, CA2U( dps->DefaultIniName ).c_str(), _TRUNCATE );
+    if( dps != NULLPTR )
+        wcsncpy_s( gConfigureINIFullPath, MAX_PATH - 1, CA2U( dps->DefaultIniName ).c_str(), _TRUNCATE );
 
     CXMLMapperV2& xmlMapper = GetXMLMapper();
+    gArkCompressorOpt.Init();
 
     bool isSuccessLoad = false;
 
-    if( ( isSuccessLoad = xmlMapper.LoadFile( CU2U8( GetCurrentPath() + L"\\" + CONFIGURE_XML_FILENAME + L".sample" ) ) ) == false )
-        isSuccessLoad = xmlMapper.LoadFile( CU2U8( GetCurrentPath() + L"\\" + CONFIGURE_XML_FILENAME ) );
+    if( (isSuccessLoad = xmlMapper.LoadFile( CU2U8( GetCurrentPath( g_hInst ) + L"\\" + CONFIGURE_XML_FILENAME + L".sample" ) )) == false )
+        isSuccessLoad = xmlMapper.LoadFile( CU2U8( GetCurrentPath( g_hInst ) + L"\\" + CONFIGURE_XML_FILENAME ) );
 
     if( isSuccessLoad == true )
     {
@@ -519,7 +519,7 @@ EXTERN_C UNARKWCX_API BOOL WINAPI CanYouHandleThisFileW( WCHAR *FileName )
 
 EXTERN_C UNARKWCX_API void WINAPI ConfigurePacker( HWND Parent, HINSTANCE DllInstance )
 {
-    std::wstring configurePath = tsFormat( L"%1\\%2", GetCurrentPath(), CONFIG_EXENAME );
+    std::wstring configurePath = tsFormat( L"%1\\%2", GetCurrentPath( g_hInst ), CONFIG_EXENAME );
     if( PathFileExistsW( configurePath.c_str() ) == FALSE )
         return;
 
@@ -582,6 +582,8 @@ EXTERN_C UNARKWCX_API int __stdcall PackFilesW( wchar_t* PackedFile, wchar_t* Su
     {
         vecAddFile.push_back( pwszCurrent );
     }
+
+    PackSetDefaultParams( NULL );
 
     CArkWCX arkWCX;
     IArkCompressor* pCompressor = NULL;

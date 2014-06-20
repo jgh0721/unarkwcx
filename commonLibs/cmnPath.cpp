@@ -37,11 +37,11 @@ namespace nsCommon
             return &vecBuffer[ 0 ];
         }
 
-        std::wstring GetCurrentPath()
+        std::wstring GetCurrentPath( HMODULE hModule /* = NULL */ )
         {
             wchar_t wszBuffer[ MAX_PATH ] = { 0, };
 
-            ::GetModuleFileNameW( NULL, wszBuffer, MAX_PATH );
+            ::GetModuleFileNameW( hModule, wszBuffer, MAX_PATH );
             ::PathRemoveFileSpecW( wszBuffer );
 
             return CanonicalizePath( wszBuffer );

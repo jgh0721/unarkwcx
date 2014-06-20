@@ -28,6 +28,15 @@ TEST_F( TST_Pack, PackSingleFileToZIP )
 
     ASSERT_TRUE( CallPackFiles( packedFile, L"", GetCurrentPath(), vecAddList, 0 ) == true );
     ASSERT_TRUE( PathFileExistsW( packedFile.c_str() ) != FALSE );
+
+    std::vector< tHeaderDataExW > vecHeaderDataItem;
+    ASSERT_TRUE( ListFilesInArchive( packedFile, vecHeaderDataItem ) == true );
+    for( size_t idx = 0; idx < vecHeaderDataItem.size(); ++idx )
+    {
+        auto& headerDataEx = vecHeaderDataItem[ idx ];
+        PrintHeaderItem( headerDataEx );
+    }
+
     DeleteFileW( packedFile.c_str() );
     ASSERT_TRUE( PathFileExistsW( packedFile.c_str() ) == FALSE );
 }
@@ -51,6 +60,11 @@ TEST_F( TST_Pack, PackSingleFileToISO )
     ASSERT_TRUE( PathFileExistsW( packedFile.c_str() ) != FALSE );
     DeleteFileW( packedFile.c_str() );
     ASSERT_TRUE( PathFileExistsW( packedFile.c_str() ) == FALSE );
+}
+
+TEST_F( TST_Pack, PackMultiFileToISO )
+{
+
 }
 
 TEST_F( TST_Extract, Extract )
