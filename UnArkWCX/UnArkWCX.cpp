@@ -101,7 +101,7 @@ BOOL32 CArkWCX::OpenW( LPCWSTR pwszFilePath, LPCWSTR password )
         opt.bAzoSupport = TRUE;
         opt.bPrintAssert = TRUE;
         opt.bTreatTBZAsSolidArchive = FALSE;
-        opt.bTreatTGZAsSolidArchive = FALSE;
+        opt.bTreatTGZAsSolidArchive = TRUE;
         opt.bUseLongPathName = TRUE;
 
         _arkLib.SetGlobalOpt( opt );
@@ -188,6 +188,7 @@ EXTERN_C UNARKWCX_API void WINAPI PackSetDefaultParams( PackDefaultParamStruct* 
 
         gArkCompressorOpt.compressionLevel = xmlMapper.GetDataFromItem( OPT_COMPRESSION_LEVEL );
 
+        gArkCompressorOpt.encryptionMethod = ARK_ENCRYPTION_METHOD_NONE;
         std::string encryptionMethod = xmlMapper.GetDataFromItem( OPT_ENCRYPTION_METHOD );
         if( u8sicmp( encryptionMethod, "ZIP" ) == 0 )
             gArkCompressorOpt.encryptionMethod = ARK_ENCRYPTION_METHOD_ZIP;
@@ -611,6 +612,7 @@ EXTERN_C UNARKWCX_API int __stdcall PackFilesW( wchar_t* PackedFile, wchar_t* Su
             break;
         }
 
+        pCompressor->Init();
         if( pCompressor->SetOption( gArkCompressorOpt, NULL, 0 ) == FALSE )
         {
             nRetValue = E_NOT_SUPPORTED;
