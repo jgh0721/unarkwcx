@@ -760,6 +760,7 @@ EXTERN_C UNARKWCX_API int __stdcall ProcessFileW( HANDLE hArcData, int Operation
                     pwszDestPath != NULL 이면 pwszDestPath 에는 경로가 pwszDestName 에는 파일명이 있음
                 */
                 int ret = FALSE;
+                OutputDebugStringW( tsFormat( L"[ProcessFilesW] pwszDestPath = %1, pwszDestName = %2", pwszDestPath == NULLPTR ? L"NULL" : pwszDestPath, pwszDestName == NULLPTR ? L"NULL" : pwszDestName ).c_str() );
 
                 pArkWCX->SetArkEvent();
 
@@ -854,6 +855,8 @@ EXTERN_C UNARKWCX_API int __stdcall DeleteFilesW( WCHAR* PackedFile, WCHAR* Dele
     std::vector< std::wstring > vecDeleteFile;
     for( wchar_t* pwszCurrent = DeleteList; *pwszCurrent != NULL; pwszCurrent += wcslen( pwszCurrent ) + 1 )
         vecDeleteFile.push_back( pwszCurrent );
+
+    OutputDebugStringW( tsFormat( L"PackedFile = %1, DeleteList = %2", PackedFile, DeleteList ).c_str() );
 
     CArkWCX arkWCX;
     IArk* pArk = NULL;
