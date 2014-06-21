@@ -880,7 +880,10 @@ EXTERN_C UNARKWCX_API int __stdcall DeleteFilesW( WCHAR* PackedFile, WCHAR* Dele
             break;
 
         if( pCompressor->SetArchiveFile( pArk ) == FALSE )
+        {
+            nRetValue = E_UNKNOWN_FORMAT;
             break;
+        }
 
         if( vecDeleteFile.empty() == true )
         {
@@ -911,7 +914,15 @@ EXTERN_C UNARKWCX_API int __stdcall DeleteFilesW( WCHAR* PackedFile, WCHAR* Dele
             }
         }
 
-        nRetValue = pCompressor->CreateArchive( PackedFile ) != FALSE ? 0 : E_BAD_ARCHIVE;
+        std::wstring archiveFile( PackedFile );
+        std::wstring tempArchiveFile( archiveFile + L"TEMP" );
+
+        nRetValue = pCompressor->CreateArchive( tempArchiveFile.c_str() ) != FALSE ? 0 : E_BAD_ARCHIVE;
+        if( nRetValue == 0 )
+        {
+            DeleteFileW( PackedFile );
+            MoveFileExW( tempArchiveFile.c_str(), PackedFile, 0 );
+        }
 
     } while( false );
 
