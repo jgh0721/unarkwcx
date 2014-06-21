@@ -77,17 +77,17 @@ void CArkWCX::SetArkEvent()
     if( pArk != NULLPTR )
         pArk->SetEvent( &gArkEvent );
 
-    if( _arkCompressor == NULLPTR )
+    if( _arkCompressor != NULLPTR )
         _arkCompressor->SetEvent( &gArkEvent );
 }
 
 void CArkWCX::ResetArkEvent()
 {
     IArk* pArk = _arkLib.GetIArk();
-    if( pArk == NULLPTR )
+    if( pArk != NULLPTR )
         pArk->SetEvent( NULL );
 
-    if( _arkCompressor == NULLPTR )
+    if( _arkCompressor != NULLPTR )
         _arkCompressor->SetEvent( NULL );
 }
 
