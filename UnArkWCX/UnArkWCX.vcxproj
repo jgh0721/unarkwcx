@@ -154,6 +154,9 @@
       <ModuleDefinitionFile>UnArkWCX.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(BOOST_DIR)\lib\x86</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>Copy "$(TargetPath)" "$(SolutionDir)\test\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

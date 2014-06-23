@@ -93,8 +93,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\documentation\*.xml.sample" "$(SolutionDir)\_build\$(PlatformTarget)\$(Configuration)\"</Command>
+      <Command>Copy "$(TargetPath)" "$(SolutionDir)\test\"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copy "$(SolutionDir)\documentation\*.xml.sample" "$(SolutionDir)\_build\$(PlatformTarget)\$(Configuration)\"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -140,8 +143,11 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(SolutionDir)\documentation\*.xml.sample" "$(SolutionDir)\_build\$(PlatformTarget)\$(Configuration)\"</Command>
+      <Command>Copy "$(TargetPath)" "$(SolutionDir)\test\"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>copy "$(SolutionDir)\documentation\*.xml.sample" "$(SolutionDir)\_build\$(PlatformTarget)\$(Configuration)\"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

@@ -9,6 +9,8 @@ using namespace nsCommon::nsCmnLogger;
 using namespace nsCommon::nsCmnConvert;
 using namespace nsCommon::nsCmnFormatter;
 
+#pragma warning( disable: 4996 )
+
 #pragma execution_character_set( "utf-8" )
 
 TEST_F( TST_Pack, PackSingleFileToZIP )
@@ -69,5 +71,26 @@ TEST_F( TST_Pack, PackMultiFileToISO )
 
 TEST_F( TST_Extract, Extract )
 {
+
+}
+
+TEST( CreateInstaller, MakeInstaller )
+{
+    const std::wstring currentPath = GetCurrentPath();
+
+    ASSERT_TRUE( PathFileExistsW( tsFormat( L"%1\\UnArkWCX.wcx", currentPath ).c_str() ) != FALSE );
+    ASSERT_TRUE( PathFileExistsW( tsFormat( L"%1\\UnArkWCX.wcx64", currentPath ).c_str( ) ) != FALSE );
+
+    DeleteFileW( tsFormat( L"%1\\pluginst.inf", currentPath ).c_str() );
+    FILE* fd = fopen( tsFormat( "%1\\pluginst.inf", currentPath ).c_str(), "wt" );
+    ASSERT_TRUE( fd != NULL );
+    fputs( "[plugininstall]\r\n", fd );
+    fputs( "description = \r\n", fd );
+    fputs( "type = wcx\r\n", fd );
+    fputs( "file = UnArkWCX.wcx\r\n", fd );
+    fputs( "defaultdir = UnArkWCX\r\n", fd );
+    fputs( "defaultextension = ALZ, EGG, ISO, 7Z, WIM, TAR, BH, UDF, CAB, XZ, Z, LZMA, ARJ, GZ, TGZ, BZ2, ARKWCX\r\n", fd );
+    fclose( fd );
+    fd = NULL;
 
 }
