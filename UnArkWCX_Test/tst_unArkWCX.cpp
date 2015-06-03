@@ -2,6 +2,8 @@
 
 #include "tst_unArkWCX.h"
 
+#include "../uniqueLibs/typeDefs.h"
+
 using namespace nsCommon;
 using namespace nsCommon::nsCmnPath;
 using namespace nsCommon::nsCmnDateTime;
@@ -74,7 +76,7 @@ TEST_F( TST_Extract, Extract )
 
 }
 
-TEST( CreateInstaller, MakeInstaller )
+TEST_F( TST_Pack, MakeInstaller )
 {
     const std::wstring currentPath = GetCurrentPath();
 
@@ -92,5 +94,8 @@ TEST( CreateInstaller, MakeInstaller )
     fputs( "defaultextension = ALZ, EGG, ISO, 7Z, WIM, TAR, BH, UDF, CAB, XZ, Z, LZMA, ARJ, GZ, TGZ, BZ2, ARKWCX\r\n", fd );
     fclose( fd );
     fd = NULL;
+
+    ASSERT_TRUE( CallPackSetDefaultParams() == true );
+    std::wstring packedFile = tsFormat( L"%1\\UnArkWCX_v%1.ZIP", GetCurrentPath(), UNARKWCX_VER );
 
 }

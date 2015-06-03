@@ -20,6 +20,7 @@ using namespace nsCommon::nsCmnFormatter;
 #pragma execution_character_set( "utf-8" )
 
 CArkEvent                           gArkEvent;
+SArkGlobalOpt                       gArkGlobalOpt; 
 SArkCompressorOpt                   gArkCompressorOpt;
 WCHAR                               gConfigureINIFullPath[ MAX_PATH ] = { 0, };
 
@@ -46,7 +47,7 @@ bool CArkWCX::Init( bool isCreateCompressor /* = false */ )
 {
     _currentFileIndex = -1;
 
-    ARKERR err = _arkLib.Create( gArkDLLFullPathName );
+    ARKERR err = _arkLib.Create( gArkDLLFullPathName, NULL, NULL );
 
     if( err == ARKERR_NOERR )
     {
@@ -97,12 +98,22 @@ BOOL32 CArkWCX::OpenW( LPCWSTR pwszFilePath, LPCWSTR password )
 
     do
     {
+        /*!
+            Loading Global Opts
+        */
+
         SArkGlobalOpt opt;
+        CXMLMapperV2& xmlMapper = GetXMLMapper();
+        xmlMapper.RefreshXML();
+
         opt.bAzoSupport = TRUE;
         opt.bPrintAssert = TRUE;
-        opt.bTreatTBZAsSolidArchive = FALSE;
-        opt.bTreatTGZAsSolidArchive = TRUE;
-        opt.bUseLongPathName = TRUE;
+        opt.bConvertNFD2NFCWhenMacOS = xmlMapper.GetDataFromItem( OPT_GLOBAL_CONVERT_NFD2NFC );
+        opt.bIgnoreMacOSXMetaFolder = xmlMapper.GetDataFromItem( OPT_GLOBAL_IGNORE_MACOS_META_FOLDER );
+        opt.bUseLongPathName = xmlMapper.GetDataFromItem( OPT_GLOBAL_USE_LONGPATH );
+        opt.bTreatUnixZipFileNameAsUTF8 = xmlMapper.GetDataFromItem( OPT_GLOBAL_TREAT_ZIP_AS_UTF8 );
+        opt.bTreatTGZAsSolidArchive = xmlMapper.GetDataFromItem( OPT_GLOBAL_TREAT_TGZ_AS_SOLID );
+        opt.bTreatTBZAsSolidArchive = xmlMapper.GetDataFromItem( OPT_GLOBAL_TREAT_TBZ_AS_SOLID );
 
         _arkLib.SetGlobalOpt( opt );
 
@@ -165,14 +176,14 @@ EXTERN_C UNARKWCX_API void WINAPI PackSetDefaultParams( PackDefaultParamStruct* 
 
     if( isSuccessLoad == true )
     {
-        std::string compressionFormat = xmlMapper.GetDataFromItem( OPT_COMPRESSION_FORMAT );
+        std::string compressionFormat = xmlMapper.GetDataFromItem( OPT_COMPRESS_COMPRESSION_FORMAT );
         for( size_t idx = 0; idx < VecCompressionFormat.size(); ++idx )
         {
             if( u8sicmp( VecCompressionFormat[ idx ].second, compressionFormat ) == 0 )
                 gArkCompressorOpt.ff = VecCompressionFormat[ idx ].first;
         }
 
-        std::string compressionMethod = xmlMapper.GetDataFromItem( OPT_COMPRESSION_METHOD );
+        std::string compressionMethod = xmlMapper.GetDataFromItem( OPT_COMPRESS_COMPRESSION_METHOD );
         if( u8sicmp(compressionMethod, "STORE") == 0 )
             gArkCompressorOpt.compressionMethod = ARK_COMPRESSION_METHOD_STORE;
         else if( u8sicmp( compressionMethod, "DEFLATE" ) == 0 )
@@ -186,10 +197,10 @@ EXTERN_C UNARKWCX_API void WINAPI PackSetDefaultParams( PackDefaultParamStruct* 
         else if( u8sicmp( compressionMethod, "LH7" ) == 0 )
             gArkCompressorOpt.compressionMethod = ARK_COMPRESSION_METHOD_LH7;
 
-        gArkCompressorOpt.compressionLevel = xmlMapper.GetDataFromItem( OPT_COMPRESSION_LEVEL );
+        gArkCompressorOpt.compressionLevel = xmlMapper.GetDataFromItem( OPT_COMPRESS_COMPRESSION_LEVEL );
 
         gArkCompressorOpt.encryptionMethod = ARK_ENCRYPTION_METHOD_NONE;
-        std::string encryptionMethod = xmlMapper.GetDataFromItem( OPT_ENCRYPTION_METHOD );
+        std::string encryptionMethod = xmlMapper.GetDataFromItem( OPT_COMPRESS_ENCRYPTION_METHOD );
         if( u8sicmp( encryptionMethod, "ZIP" ) == 0 )
             gArkCompressorOpt.encryptionMethod = ARK_ENCRYPTION_METHOD_ZIP;
         else if( u8sicmp(encryptionMethod, "AES256") == 0 )
@@ -236,6 +247,14 @@ EXTERN_C UNARKWCX_API void WINAPI PackSetDefaultParams( PackDefaultParamStruct* 
         {
             gArkCompressorOpt.splitSize = 0;
         }
+
+        gArkCompressorOpt.deleteArchiveWhenFailed = xmlMapper.GetDataFromItem( OPT_COMPRESS_DELETE_ARCHIVE_WHEN_FAILED ) == true ? TRUE : FALSE;
+        gArkCompressorOpt.saveNTFSTime = xmlMapper.GetDataFromItem( OPT_COMPRESS_SAVE_NTFS_TIME ) == true ? TRUE : FALSE;
+        gArkCompressorOpt.forceZip64 = xmlMapper.GetDataFromItem( OPT_COMPRESS_FORCE_ZIP64_FORMAT ) == true ? TRUE : FALSE;
+        gArkCompressorOpt.forceUtf8FileNameZip = xmlMapper.GetDataFromItem( OPT_COMPRESS_FORCE_FILENAME_UTF8_ZIP ) == true ? TRUE : FALSE;
+        gArkCompressorOpt.forceUtf8FileNameTar = xmlMapper.GetDataFromItem( OPT_COMPRESS_FORCE_FILENAME_UTF8_TAR ) == true ? TRUE : FALSE;
+        gArkCompressorOpt.utf8FileNameIfNeeded = xmlMapper.GetDataFromItem( OPT_COMPRESS_USE_UTF8_IF_NEEDED ) == true ? TRUE : FALSE;
+
         // TODO: 
 //        xmlMapper.GetDataFromItem( OPT_MULTI_THREAD_SUPPORT );
 //        xmlMapper.GetDataFromItem( OPT_EXTRACT_CODEPAGE );
@@ -496,7 +515,7 @@ EXTERN_C UNARKWCX_API BOOL WINAPI CanYouHandleThisFileW( WCHAR *FileName )
     do
     {
         CArkLib arkLib;
-        if( arkLib.Create( gArkDLLFullPathName ) != ARKERR_NOERR )
+        if( arkLib.Create( gArkDLLFullPathName, NULL, NULL ) != ARKERR_NOERR )
             break;
 
         ARK_FF fileFormat = arkLib.CheckFormat( FileName );

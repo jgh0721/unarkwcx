@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// 
-///                                      Ark Library 5
+///                                      Ark Library v6
 /// 
 /// ※ 만일 컴파일 오류등으로 인해서 이 파일을 수정하여야 하는 경우가 발생할 경우 
 ///    관련 내용을 꼭 알려주시기 바랍니다. 
@@ -19,7 +19,7 @@
 #define _ARK_H_
 
 // ArkLibrary 버전 (Ark.h 와 ArkXX.dll 파일의 버전이 동일한지 여부 판단용)
-#define ARK_LIBRARY_VERSION								(0x50000000 + 0x00130424)
+#define ARK_LIBRARY_VERSION								(0x20150527)
 
 
 // 에러코드
@@ -29,7 +29,7 @@ enum ARKERR
 	ARKERR_CANT_OPEN_FILE								= 0x01,		// 파일 열기 실패
 	ARKERR_CANT_READ_SIG								= 0x02,		// signature 읽기 실패
 	ARKERR_AT_READ_CONTAINER_HEADER						= 0x03,		// 컨테이너 헤더가 손상되었음
-	ARKERR_INVALID_FILENAME_LENGTH						= 0x04,		// 파일명 길이에 문제
+	ARKERR_INVALID_FILENAME_LENGTH						= 0x04,		// (압축 파일 내부의)파일명 길이에 문제가 있음
 	ARKERR_READ_FILE_NAME_FAILED						= 0x05,		// 파일이름 읽기 실패
 	ARKERR_INVALID_EXTRAFIELD_LENGTH					= 0x06,		// extra field 읽기
 	ARKERR_READ_EXTRAFILED_FAILED						= 0x07,		// extra field 읽기 실패
@@ -88,6 +88,8 @@ enum ARKERR
 	ARKERR_TOO_LONG_FILE_NAME							= 0x70,		// 파일명이 너무 길어서 처리할 수 없음
 	ARKERR_TOO_LONG_FILE_NAME_AND_TRUNCATED				= 0x71,		// 파일명이 너무 길어서 뒷부분이 잘렸습니다.
 	ARKERR_TOO_MANY_FILE_COUNT							= 0x72,		// 파일 갯수가 너무 길어서 처리할 수 없음
+	ARKERR_CANT_OPEN_SRC_FILE_TO_COPY					= 0x73,		// 파일을 복사하기 위한 원본 파일을 열 수 없음 (rar5 redirect 처리용)
+	ARKERR_INVALID_COMPRESSED_SIZE						= 0x74,		// 압축된 크기가 잘못되었음(음수임)
 
 	ARKERR_CORRUPTED_FILE								= 0x100,	// 파일이 손상되었음
 	ARKERR_INVALID_FILE									= 0x101,	// 포맷이 다르다
@@ -125,8 +127,9 @@ enum ARK_FF
 	ARK_FF_ALZ_SECONDVOL,					// 분할 alz 파일의 2번째 이후 압축파일
 	ARK_FF_LZH,
 	ARK_FF_RAR,
-	ARK_FF_RAR5,
 	ARK_FF_RAR_SECONDVOL,					// 분할 RAR 파일의 2번째 이후 압축파일
+	ARK_FF_RAR5,
+	ARK_FF_RAR5_SECONDVOL,
 	ARK_FF_7Z,
 	ARK_FF_7ZSPLIT,							// 7z 파일의 뒷부분이 잘렸고 확장자가 .001 인 파일 (.7z.001 ~ .7z.NNN)
 	ARK_FF_7ZBROKEN,						// 7z 파일의 뒷부분이 잘렸거나 헤더가 손상된 파일
@@ -142,13 +145,13 @@ enum ARK_FF
 	ARK_FF_GZ,
 	ARK_FF_BZ2,
 	ARK_FF_LZMA,
-	ARK_FF_BH,								// blakhole
+	ARK_FF_BH,								// blakhole (not blackhole)
 	ARK_FF_EGG,
 	ARK_FF_EGG_NOTFIRSTVOL,					// 분할 압축의 첫번째 볼륨이 아닌 파일
 	ARK_FF_XZ,
 	ARK_FF_WIM,								// raw 만 사용하는 wim
 	ARK_FF_WIM_COMPRESSED,					// 압축된 wim, Windows 에서만 지원
-	ARK_FF_FREEARC,							// FreeArc - 파일 목록열기만 지원
+	ARK_FF_FREEARC,							// FreeArc
 	ARK_FF_Z,								// .Z (unix compress)
 	ARK_FF_ARJ,								// arj 
 	ARK_FF_BAMSFX,							// 밤톨이 sfx
@@ -159,6 +162,9 @@ enum ARK_FF
 	ARK_FF_J2JBROKEN,						// 뒷부분이 잘린 j2j
 	ARK_FF_K2K,								// .k2k
 	ARK_FF_NSIS,							// nsis exe
+	ARK_FF_ISZ,								// EZBSystems(UltraISO) ZIPPED ISO
+	ARK_FF_BIN,								// CD Image
+	ARK_FF_AESCRYPT,						// AESCrypt (v0, v1, v2)
 
 	ARK_FF_UNKNOWN				= 0x00ff,	// 알 수 없는 파일 포맷
 
@@ -182,7 +188,8 @@ enum ARK_FF
 	ARK_FF_OGGS					= 0x0208,	// OggS
 	ARK_FF_MATROSKA				= 0x0209,	// MKV
 	ARK_FF_PDF					= 0x020a,	// PDF
-	ARK_FF_NOTARCHIVE_LAST		= 0x020a,
+	ARK_FF_MP4					= 0x020b,	// MP4 
+	ARK_FF_NOTARCHIVE_LAST		= 0x020b,
 
 };
 
@@ -201,6 +208,7 @@ enum ARK_ENCRYPTION_METHOD
 
 	ARK_ENCRYPTION_METHOD_RAR				= 0x08,	// RAR 암호 방식
 	ARK_ENCRYPTION_METHOD_ACE				= 0x09,	// ACE 암호
+	ARK_ENCRYPTION_METHOD_AESCRYPT			= 0x0a,	// AesCrypt 암호(AES256)
 
 	ARK_ENCRYPTION_METHOD_ETC				= 0x99,	
 
@@ -228,12 +236,17 @@ enum ARK_COMPRESSION_METHOD
 	// (http://www.pkware.com/documents/casestudies/APPNOTE.TXT 참고)
 	ARK_COMPRESSION_METHOD_STORE		=	0,
 	ARK_COMPRESSION_METHOD_SHRINK		=	1,
+	ARK_COMPRESSION_METHOD_REDUCE1		=	2,
+	ARK_COMPRESSION_METHOD_REDUCE2		=	3,
+	ARK_COMPRESSION_METHOD_REDUCE3		=	4,
+	ARK_COMPRESSION_METHOD_REDUCE4		=	5,
 	ARK_COMPRESSION_METHOD_IMPLODE		=	6,
 	ARK_COMPRESSION_METHOD_DEFLATE		=	8,
 
 	ARK_COMPRESSION_METHOD_DEFLATE64	=	9,
 	ARK_COMPRESSION_METHOD_BZIP2		=	12,
 	ARK_COMPRESSION_METHOD_LZMA			=	14,		// zipx, 7zip ...
+	ARK_COMPRESSION_METHOD_XZ			=	95,		// zipx, http://www.winzip.com/comp_info.htm
 	ARK_COMPRESSION_METHOD_JPEG			=	96,		// zipx
 	ARK_COMPRESSION_METHOD_WAVPACK		=	97,		// zipx
 	ARK_COMPRESSION_METHOD_PPMD			=	98,		// zipx, 7zip
@@ -254,6 +267,7 @@ enum ARK_COMPRESSION_METHOD
 	ARK_COMPRESSION_METHOD_RAR29		=	403,	// RAR 3.X
 	ARK_COMPRESSION_METHOD_RAR36		=	404,	// RAR 3.X alternative hash
 	ARK_COMPRESSION_METHOD_RAR50		=	405,	// RAR 5.0
+	ARK_COMPRESSION_METHOD_REDIR		=	406,	// Redirect (RAR5)
 
 	ARK_COMPRESSION_METHOD_MSZIP		=	500,	// CAB
 	ARK_COMPRESSION_METHOD_LHA			=	501,	// lzh
@@ -265,6 +279,13 @@ enum ARK_COMPRESSION_METHOD
 	ARK_COMPRESSION_METHOD_OBDEFLATE	=	508,	// Obfuscated deflate (alz)
 	ARK_COMPRESSION_METHOD_DELTA		=	509,	// 7z
 	ARK_COMPRESSION_METHOD_XPRESS		=	510,	// wim - xpress
+	ARK_COMPRESSION_METHOD_SWAP2		=	511,	// SWAP2
+	ARK_COMPRESSION_METHOD_SWAP4		=	512,	// SWAP4
+	ARK_COMPRESSION_METHOD_ARM			=	513,	// ARM
+	ARK_COMPRESSION_METHOD_ARMT			=	514,	// ARMT
+	ARK_COMPRESSION_METHOD_IA64			=	515,	// IA64
+	ARK_COMPRESSION_METHOD_PPC			=	516,	// PPC
+	ARK_COMPRESSION_METHOD_SPARC		=	517,	// SPARC
 
 	ARK_COMPRESSION_METHOD_LH0			=	600,	// -lh0-
 	ARK_COMPRESSION_METHOD_LH1			=	601,	// -lh1-
@@ -311,6 +332,20 @@ enum ARK_COMPRESSION_METHOD
 	ARK_COMPRESSION_METHOD_ACE20		=	911,	// ace v20
 	ARK_COMPRESSION_METHOD_ACE			=	912,	// ace 최신?
 
+	ARK_COMPRESSION_METHOD_GRZIP		=	1000,	// FreeARC
+	ARK_COMPRESSION_METHOD_4x4			=	1001,
+	ARK_COMPRESSION_METHOD_DISPACK		=	1002,
+	ARK_COMPRESSION_METHOD_PMM			=	1003,
+	ARK_COMPRESSION_METHOD_LZ4B			=	1004,
+	ARK_COMPRESSION_METHOD_LZP			=	1005,
+	ARK_COMPRESSION_METHOD_MM			=	1006,
+	ARK_COMPRESSION_METHOD_REP			=	1007,
+	ARK_COMPRESSION_METHOD_TORNADO		=	1008,
+	ARK_COMPRESSION_METHOD_TTA			=	1009,
+	ARK_COMPRESSION_METHOD_DICT			=	1010,
+	ARK_COMPRESSION_METHOD_CRC			=	1011,
+	ARK_COMPRESSION_METHOD_FAKE			=	1012,
+
 	// 
 	/////////////////////////////////////////////////////////////////
 
@@ -328,10 +363,14 @@ enum ARK_MULTIVOL_STYLE
 	ARK_MULTIVOL_STYLE_EGG,				// vol1.egg vol2.egg vol3.egg ... 스타일
 	ARK_MULTIVOL_STYLE_RAR,				// part1.rar part2.rar ... 스타일
 	ARK_MULTIVOL_STYLE_R00,				// .rar .r00 .r01 스타일
+	ARK_MULTIVOL_STYLE_RAR5,			// part1.rar (RAR5)
 	ARK_MULTIVOL_STYLE_ARJ,				// .arj .a01 .a02 스타일
 	ARK_MULTIVOL_STYLE_BAMSFX,			// 밤톨이 sfx (exe, .002 .003 ...)
 	ARK_MULTIVOL_STYLE_BDZSFX,			// 반디집 SFX (exe, .e01 .e02 ...)
 	ARK_MULTIVOL_STYLE_CAB,				// 분할 cab 파일
+	ARK_MULTIVOL_STYLE_ISZ0,			// 분할 ISZ 파일 (isz, i01, i02... )
+	ARK_MULTIVOL_STYLE_ISZ1,			// 분할 ISZ 파일 (part01.isz, part02.isz...)
+	ARK_MULTIVOL_STYLE_ISZ2,			// 분할 ISZ 파일 (part001.isz, part002.isz...)
 };
 
 
@@ -368,7 +407,7 @@ enum ARK_MULTIVOL_STYLE
 #endif
 
 // BOOL 대신 BOOL32 를 사용한다.
-typedef int				BOOL32;
+typedef int			BOOL32;
 typedef unsigned char   ARKBYTE;
 
 
@@ -559,11 +598,11 @@ struct SArkCodepage
 	void Init()
 	{
 		#ifdef _WIN32
-		fileSystem = ARK_CP_ACP;
+		  fileSystem = ARK_CP_ACP;
 		#else
-		fileSystem = ARK_CP_UTF8;	// POSIX 는 파일시스템에 보통 UTF8 코드페이지 사용
+		  fileSystem = ARK_CP_UTF8;	// POSIX 는 파일시스템에 보통 UTF8 코드페이지 사용
 		#endif
-		fileName = ARK_CP_OEM;
+		fileName = ARK_CP_OEM;		// ZIP 포맷은 DOS 호환으로 ACP 대신 OEM 을 사용한다.
 		comment = ARK_CP_ACP;
 		password = ARK_CP_ACP;
 	}
@@ -581,6 +620,7 @@ struct SArkCodepage
 struct IArk
 {
 	ARKMETHOD(void)					Release() PURE;
+	ARKMETHOD(BOOL32)				Verify(LPCSTR id, LPCSTR key) PURE;
 									
 	ARKMETHOD(BOOL32)  				Open(LPCSTR  filePath, LPCSTR password) PURE; 
 	ARKMETHOD(BOOL32)  				Open(LPCWSTR filePath, LPCWSTR password) PURE; 
@@ -611,7 +651,7 @@ struct IArk
 	ARKMETHOD(BOOL32)				ExtractOneTo(int index, LPCSTR folderPath) PURE;
 	ARKMETHOD(BOOL32)				ExtractOneTo(int index, IArkSimpleOutStream* outStream) PURE;
 	ARKMETHOD(BOOL32)				ExtractOneTo(int index, ARKBYTE* outBuf, int outBufLen) PURE;
-	ARKMETHOD(BOOL32)				ExtractOneAs(int index, LPCWSTR filePathName, WCHAR resultPathName[ARK_MAX_PATH]) PURE;			// 파일명을 지정해서 파일 하나 풀기
+	ARKMETHOD(BOOL32)				ExtractOneAs(int index, LPCWSTR filePathName, WCHAR* resultPathName, int resultPathNameLen) PURE;			// 파일명을 지정해서 파일 하나 풀기
 
 	ARKMETHOD(BOOL32)				AddIndex2ExtractList(int index) PURE;						// 압축풀 파일 인덱스를 목록에 추가
 	ARKMETHOD(void)					ClearExtractList() PURE;									// 압축풀 파일 목록 삭제하기
@@ -655,6 +695,7 @@ struct IArk
 	ARKMETHOD(void*)				_GetExtractor() PURE;
 	ARKMETHOD(void*)				_GetInStream() PURE;
 	ARKMETHOD(BOOL32)				_DisableItem(int index) PURE;
+	ARKMETHOD(BOOL32)				_ReadRawArchiveData(INT64 offset, ARKBYTE* buf, int length) PURE;
 
 	// for c++ builder
 	ARKMETHOD(BOOL32)  				_OpenW(LPCWSTR filePath, LPCWSTR password) PURE; 
@@ -676,6 +717,7 @@ struct SArkCompressorOpt
 	void Init()
 	{
 		ff = ARK_FF_ZIP;
+		deleteArchiveWhenFailed = TRUE;
 		saveNTFSTime = FALSE;
 		streamOutput = FALSE;
 		compressionMethod = ARK_COMPRESSION_METHOD_DEFLATE;
@@ -685,7 +727,8 @@ struct SArkCompressorOpt
 		forceZip64 = FALSE;
 		useDosTime2PasswordCheck = TRUE;
 		sfxPathName = NULL;
-		forceUtf8FileName = FALSE;
+		forceUtf8FileNameZip = FALSE;
+		forceUtf8FileNameTar = FALSE;
 		forceUtf8Comment = FALSE;
 		utf8FileNameIfNeeded = TRUE;
 		bypassWhenUncompressible = FALSE;
@@ -696,9 +739,10 @@ struct SArkCompressorOpt
 		_7zEncryptHeader = FALSE;
 		lzma2NumBlockThreads = -1;
 		threadPriority = THREAD_PRIORITY_NORMAL;
-		deleteArchiveWhenFailed = TRUE;
 	}
-	ARK_FF					ff;							// 파일 포맷 ARK_FF_ZIP, ARK_FF_TAR, ARK_FF_TGZ, ARK_FF_7Z, ARK_FF_LZH, ARK_FF_ISO
+	ARK_FF					ff;							// 파일 포맷 ARK_FF_ZIP, ARK_FF_TAR, ARK_FF_TGZ, ARK_FF_7Z, ARK_FF_LZH
+	BOOL32					deleteArchiveWhenFailed;	// 압축중 에러 발생시 생성된 파일 삭제하기
+
 	BOOL32					saveNTFSTime;				// ntfs 시간 저장 여부
 	BOOL32					streamOutput;				// stream 형태로 저장 - 이 값이 TRUE 일 경우 열지 못하는 프로그램이 너무 많음.
 	ARK_COMPRESSION_METHOD	compressionMethod;			// 압축 방식 ( ARK_COMPRESSION_METHOD_STORE, ARK_COMPRESSION_METHOD_DEFLATE, ARK_COMPRESSION_METHOD_LZMA )
@@ -708,14 +752,14 @@ struct SArkCompressorOpt
 	BOOL32					forceZip64;					// 강제로 zip64 정보 저장
 	BOOL32					useDosTime2PasswordCheck;	// 암호 체크 데이타를 crc 대신 dostime 을 사용한다. (사용시 압축 속도 향상). 단 분할압축시 이 옵션은 무시됨
 	LPCWSTR					sfxPathName;				// sfx를 만들경우 sfx 파일경로명. NULL 이면 사용하지 않음.
-	BOOL32					forceUtf8FileName;			// 파일명을 모두 utf8 로 저장
+	BOOL32					forceUtf8FileNameZip;		// zip 포맷의 파일명을 모두 utf8 로 저장
+	BOOL32					forceUtf8FileNameTar;		// tar/tgz 포맷의 파일명을 모두 utf8 로 저장
 	BOOL32					forceUtf8Comment;			// 압축파일 설명을 utf8 로 저장 (다른 프로그램과 호완되지 않음)
 	BOOL32					utf8FileNameIfNeeded;		// 파일명에 유니코드가 포함되어 있을 경우 utf8 로 저장
 	BOOL32					bypassWhenUncompressible;	// 압축중 압축이 안될경우 그냥 bypass
 	int						lzmaEncodeThreadCount;		// LZMA 압축시 쓰레드 카운트. 1~2
 	BOOL32					enableMultithreadDeflate;	// Deflate 압축시 멀티쓰레드 사용
 	int						deflateEncodeThreadCount;	// Deflate 압축시 사용할 쓰래드 갯수. 0 이면 기본값 사용
-	BOOL32					deleteArchiveWhenFailed;	// 압축중 에러 발생시 생성된 파일 삭제하기
 
 	BOOL32					_7zCompressHeader;			// 7zip 압축시 헤더를 압축할 것인가?
 	BOOL32					_7zEncryptHeader;			// 7zip 압축시 헤더를 암호화 할 것인가? (암호 지정시)
@@ -733,6 +777,7 @@ struct IArkCompressor
 	ARKMETHOD(void)			Release() PURE;												// 객체 해제
 
 	ARKMETHOD(void)			Init() PURE;												// 초기화 (새로운 압축파일 생성 시작)
+	ARKMETHOD(void)			SetCodePage(SArkCodepage cp) PURE;
 	ARKMETHOD(void)			SetEvent(IArkEvent* pEvent) PURE;							// 반드시 Init() 호출후 매번 호출해야 한다.
 	ARKMETHOD(BOOL32)		SetOption(SArkCompressorOpt& opt, const ARKBYTE* password, int pwLen) PURE;// CreateArchive() 호출전에만 호출하면 언제 호출해도 상관없고, 한번 호출하면 끝
 
@@ -761,6 +806,7 @@ struct IArkCompressor
 extern "C" __declspec(dllexport) IArk*				CreateArk(UINT32 SDKVersion);
 extern "C" __declspec(dllexport) IArkCompressor*	CreateArkCompressor(UINT32 SDKVersion);
 #endif
+extern "C" IArkCompressor*							CreateArkCompressorLib(UINT32 SDKVersion);
 extern "C" IArk*									CreateArkLib(UINT32 SDKVersion);
 
 

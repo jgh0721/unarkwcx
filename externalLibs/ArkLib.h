@@ -106,20 +106,9 @@ public :
 
 #ifndef _ARK_USE_AS_LIB
 	// .dll 로 사용하는 경우
-	ARKERR	 Create(LPCTSTR szDllPathName)
+	ARKERR	 Create(LPCTSTR szDllPathName, LPCSTR id, LPCSTR key)
 	{
 		if(m_hDll) {ASSERT(0); return ARKERR_ALREADY_DLL_CREATED;}
-
-		// check os version
-#ifdef _WIN32
-		OSVERSIONINFO osv;
-		osv.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-		if (GetVersionEx(&osv)==FALSE || 
-			osv.dwPlatformId <=VER_PLATFORM_WIN32_WINDOWS)		// does not support 98
-		{
-			return ARKERR_UNSUPPORTED_OS;
-		}
-#endif
 
 		m_hDll = LoadLibrary(szDllPathName);
 		if(m_hDll==NULL)
@@ -159,6 +148,9 @@ public :
 			return ARKERR_INVALID_VERSION;
 		}
 
+		// Verify license
+		BOOL32 verified = m_pArk->Verify(id, key);
+
 		return ARKERR_NOERR;
 	}
 #endif	// not _ARK_USE_AS_LIB
@@ -183,7 +175,7 @@ public :
 
 #ifdef _ARK_USE_AS_LIB
 	// .lib 로 사용하는 경우
-	ARKERR	 CreateLib()
+	ARKERR	 CreateLib(LPCSTR id, LPCSTR key)
 	{
 		m_pArk = CreateArkLib(ARK_LIBRARY_VERSION);
 		if(m_pArk==NULL)
@@ -191,6 +183,8 @@ public :
 			ASSERT(0);
 			return ARKERR_INVALID_VERSION;
 		}
+		// Verify license
+		BOOL verified = m_pArk->Verify(id, key);
 		return ARKERR_NOERR;
 	}
 #endif
@@ -214,6 +208,10 @@ public :				// IArk
 	ARKMETHOD(void)				Release() 
 	{
 		Destroy();
+	}
+	ARKMETHOD(BOOL32)				Verify(LPCSTR id, LPCSTR key) 
+	{
+		return m_pArk ? m_pArk->Verify(id, key) : FALSE;
 	}
 
 #ifndef _WIN32
@@ -344,9 +342,9 @@ public :				// IArk
 	{
 		return m_pArk ? m_pArk->ExtractOneTo(index, outBuf, outBufLen) : FALSE;
 	}
-	ARKMETHOD(BOOL32)			ExtractOneAs(int index, LPCWSTR filePathName, WCHAR resultPathName[ARK_MAX_PATH])
+	ARKMETHOD(BOOL32)			ExtractOneAs(int index, LPCWSTR filePathName, WCHAR* resultPathName, int resultPathNameLen)
 	{
-		return m_pArk ? m_pArk->ExtractOneAs(index, filePathName, resultPathName) : FALSE;
+		return m_pArk ? m_pArk->ExtractOneAs(index, filePathName, resultPathName, resultPathNameLen) : FALSE;
 	}
 
 
@@ -505,6 +503,10 @@ public :				// IArk
 	{
 		return  m_pArk ? m_pArk->_DisableItem(index): FALSE;
 	}
+	ARKMETHOD(BOOL32)				_ReadRawArchiveData(INT64 offset, ARKBYTE* buf, int length)
+	{
+		return  m_pArk ? m_pArk->_ReadRawArchiveData(offset, buf, length) : FALSE;
+	}
 
 	ARKMETHOD(void)				_Test()
 	{
@@ -539,7 +541,7 @@ public :				// IArk
 	}
 
 
-private :
+public :
 	HMODULE					m_hDll;
 	LPCREATEARK				m_pCreateArk;
 	LPCREATEARKCOMPRESSOR	m_pCreateArkCompressor;

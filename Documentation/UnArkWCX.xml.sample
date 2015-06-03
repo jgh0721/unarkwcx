@@ -1,32 +1,58 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <UnArkWCX>
-    <!-- compressionFormat, ZIP, TAR, TGZ, 7Z, LZH, ISO -->
-    <compressionFormat>ZIP</compressionFormat>
-
-    <!-- -1 = Compression Default, 0 ~ 9 -->
-    <compressionLevel></compressionLevel>
-
-    <!-- ZIP 일 때 STORE, DEFLATE, LZMA -->
-    <!-- 7Z 일 때 STORE, LZMA, LZMA2 -->
-    <!-- LZH 일 때 STORE, LH6, LH7 -->
-    <compressionMethod></compressionMethod>
-
-    <!-- ZIP, 7Z 일 때, None, ZIP, AES256-->
-    <encryptionMethod></encryptionMethod>
+    <global>
+        <convertNFD2NFCWhenMacOS></convertNFD2NFCWhenMacOS>
+        <ignoreMacOSXMetaFolder></ignoreMacOSXMetaFolder>
+        <useLongPathNameExceedsMAXPATH></useLongPathNameExceedsMAXPATH>
+        <treatZIPFileNameAsUTF8></treatZIPFileNameAsUTF8>
+        <treatTGZAsSOLID></treatTGZAsSOLID>
+        <treatTBZAsSOLID></treatTBZAsSOLID>
+    </global>
     
-    <!-- true, false -->
-    <deleteArchiveWhenFailed></deleteArchiveWhenFailed>
+    <compression>
+        <!-- compressionFormat, ZIP, TAR, TGZ, 7Z, LZH, ISO -->
+        <compressionFormat>ZIP</compressionFormat>
 
-    <!-- Default : ANSI, -->
-    <extractCodePage></extractCodePage>
+        <!-- -1 = Compression Default, 0 ~ 9 -->
+        <compressionLevel></compressionLevel>
 
-    <!-- true, false -->
-    <splitArchive></splitArchive>
-    <!-- 0 = Dont Split, 1 = 1MB, 2 = 10MB, 3 = 100MB, 4 = 1GB, 5 = 2GB, 6 = 4GB -->
-    <splitArchiveSizeEnum></splitArchiveSizeEnum>
-    <!-- KiloByte -->
-    <splitArhciveSizeManual></splitArhciveSizeManual>
+        <!-- ZIP 일 때 STORE, DEFLATE, LZMA -->
+        <!-- 7Z 일 때 STORE, LZMA, LZMA2 -->
+        <!-- LZH 일 때 STORE, LH6, LH7 -->
+        <compressionMethod></compressionMethod>
+
+        <!-- ZIP, 7Z 일 때, None, ZIP, AES256-->
+        <encryptionMethod></encryptionMethod>
     
+        <!-- true, false -->
+        <deleteArchiveWhenFailed></deleteArchiveWhenFailed>
+        <!-- true, false -->
+        <saveNTFSTime></saveNTFSTime>
+        <!-- true, false -->
+        <forceZIP64Format></forceZIP64Format>
+        <!-- true, false -->
+        <forceFileNameUTF8InZIP></forceFileNameUTF8InZIP>
+        <!-- true, false -->
+        <forceFileNameUTF8InTAR></forceFileNameUTF8InTAR>
+        <!-- true, false -->
+        <useUTF8FileNameIfNeeded></useUTF8FileNameIfNeeded>
+
+        <!-- true, false -->
+        <splitArchive></splitArchive>
+        <!-- 0 = Dont Split, 1 = 1MB, 2 = 10MB, 3 = 100MB, 4 = 1GB, 5 = 2GB, 6 = 4GB -->
+        <splitArchiveSizeEnum></splitArchiveSizeEnum>
+        <!-- KiloByte -->
+        <splitArhciveSizeManual></splitArhciveSizeManual>
+
+        <multithreadSupport>true</multithreadSupport>        
+    </compression>
+    
+    <descompression>
+        <codepage>
+            <!-- Default : ANSI, -->
+            <filename></filename>
+        </codepage>
+    </descompression>
     
 </UnArkWCX>

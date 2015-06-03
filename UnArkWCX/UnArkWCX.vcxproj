@@ -110,6 +110,10 @@
     <PostBuildEvent>
       <Command>Copy "$(TargetPath)" "$(SolutionDir)\test\"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>Copy "$(SolutionDir)\documentation\UnArkWCX.xml.sample" "$(SolutionDir)\Test\"
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -157,6 +161,10 @@
     <PostBuildEvent>
       <Command>Copy "$(TargetPath)" "$(SolutionDir)\test\"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>Copy "$(SolutionDir)\documentation\UnArkWCX.xml.sample" "$(SolutionDir)\Test\"
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -180,6 +188,9 @@
       </ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(BOOST_DIR)\lib\x64</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>Copy "$(TargetPath)" "$(SolutionDir)\test\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

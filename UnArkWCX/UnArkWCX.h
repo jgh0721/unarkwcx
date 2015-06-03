@@ -24,6 +24,7 @@ const wchar_t* const CONFIGURE_XML_FILENAME = L"UnArkWCX.xml";
     토탈커맨더 플러그인인 WCX 의 수행에 있어서 필수적인 함수들 선언
 */
 
+extern SArkGlobalOpt                    gArkGlobalOpt;
 extern SArkCompressorOpt                gArkCompressorOpt;
 
 // extern WCHAR gCurrentArchiveExtension[ 32 ];            // 압축파일을 생성할 때 사용할 확장자
@@ -59,6 +60,8 @@ public:
 private:
     CArkLib                                 _arkLib;
     IArkCompressor*                         _arkCompressor;
+    SArkCodepage                            _arkCodePage;
+    SArkDetectCodepage                      _arkDetectCodePage;
     boost::atomic_int                       _currentFileIndex;
 };
 

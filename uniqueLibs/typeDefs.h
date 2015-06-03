@@ -12,6 +12,8 @@
 
 typedef std::pair< ARK_FF, std::string >                    TyPrFileFormatToDesc;
 
+const std::string UNARKWCX_VER = "1.99r6";
+
 enum eCompressionLevel
 {
     COMPRESS_LEVEL_DEFAULT = -1, 
@@ -226,13 +228,32 @@ const std::wstring CONFIG_FILENAME = L"UnArkWCX.xml";
 const std::wstring CONFIG_EXENAME = L"UnArkWCX_Opts.exe";
 const std::wstring PACKER_EXTENSION = L"ARKWCX";
 
-const tagXMLItemV2< std::string > OPT_COMPRESSION_FORMAT    = { "/UnArkWCX/compressionFormat", PrFormatZIPToDesc.second };
-const tagXMLItemV2< std::string > OPT_COMPRESSION_METHOD    = { "/UnArkWCX/compressionMethod", "DEFLATE" };
-const tagXMLItemV2< int >         OPT_COMPRESSION_LEVEL     = { "/UnArkWCX/compressionLevel", -1 };
-const tagXMLItemV2< std::string > OPT_ENCRYPTION_METHOD     = { "/UnArkWCX/encryptionMethod", "None" };
-const tagXMLItemV2< bool >        OPT_SPLIT_ARCHIVE         = { "/UnArkWCX/splitArchive", false };
-const tagXMLItemV2< int >         OPT_SPLIT_ARCHIVE_ENUM    = { "/UnArkWCX/splitArchiveSizeEnum", 0 };
-const tagXMLItemV2< int >         OPT_SPLIT_ARCHIVE_MANUAL  = { "/UnArkWCX/splitArhciveSizeManual", 0 };
-const tagXMLItemV2< bool >        OPT_MULTI_THREAD_SUPPORT  = { "/UnArkWCX/multithreadSupport", true };
-const tagXMLItemV2< std::string > OPT_EXTRACT_CODEPAGE      = { "/UnArkWCX/multithreadSupport", "ANSI" };
+// GLOBAL
+const tagXMLItemV2< bool >              OPT_GLOBAL_CONVERT_NFD2NFC              = { "/UnArkWCX/global/convertNFD2NFCWhenMacOS", false };
+const tagXMLItemV2< bool >              OPT_GLOBAL_IGNORE_MACOS_META_FOLDER     = { "/UnArkWCX/global/ignoreMacOSXMetaFolder", false };
+const tagXMLItemV2< bool >              OPT_GLOBAL_USE_LONGPATH                 = { "/UnArkWCX/global/useLongPathNameExceedsMAXPATH", true };
+const tagXMLItemV2< bool >              OPT_GLOBAL_TREAT_ZIP_AS_UTF8            = { "/UnArkWCX/global/treatZIPFileNameAsUTF8", true };
+const tagXMLItemV2< bool >              OPT_GLOBAL_TREAT_TGZ_AS_SOLID           = { "/UnArkWCX/global/treatTGZAsSOLID", false };
+const tagXMLItemV2< bool >              OPT_GLOBAL_TREAT_TBZ_AS_SOLID           = { "/UnArkWCX/global/treatTBZAsSOLID", false };
+
+// COMPRESSION
+const tagXMLItemV2< std::string >       OPT_COMPRESS_COMPRESSION_FORMAT         = { "/UnArkWCX/compression/compressionFormat", PrFormatZIPToDesc.second };
+const tagXMLItemV2< std::string >       OPT_COMPRESS_COMPRESSION_METHOD         = { "/UnArkWCX/compression/compressionMethod", "DEFLATE" };
+const tagXMLItemV2< int >               OPT_COMPRESS_COMPRESSION_LEVEL          = { "/UnArkWCX/compression/compressionLevel", -1 };
+const tagXMLItemV2< std::string >       OPT_COMPRESS_ENCRYPTION_METHOD          = { "/UnArkWCX/compression/encryptionMethod", "None" };
+
+const tagXMLItemV2< bool >              OPT_COMPRESS_DELETE_ARCHIVE_WHEN_FAILED = { "/UnArkWCX/compression/deleteArchiveWhenFailed", true };
+const tagXMLItemV2< bool >              OPT_COMPRESS_SAVE_NTFS_TIME             = { "/UnArkWCX/compression/saveNTFSTime", false };
+const tagXMLItemV2< bool >              OPT_COMPRESS_FORCE_ZIP64_FORMAT         = { "/UnArkWCX/compression/forceZIP64Format", false };
+const tagXMLItemV2< bool >              OPT_COMPRESS_FORCE_FILENAME_UTF8_ZIP    = { "/UnArkWCX/compression/forceFileNameUTF8InZIP", true };
+const tagXMLItemV2< bool >              OPT_COMPRESS_FORCE_FILENAME_UTF8_TAR    = { "/UnArkWCX/compression/forceFileNameUTF8InTAR", true };
+const tagXMLItemV2< bool >              OPT_COMPRESS_USE_UTF8_IF_NEEDED         = { "/UnArkWCX/compression/useUTF8FileNameIfNeeded", true };
+
+const tagXMLItemV2< bool >              OPT_SPLIT_ARCHIVE                       = { "/UnArkWCX/compression/splitArchive", false };
+const tagXMLItemV2< int >               OPT_SPLIT_ARCHIVE_ENUM                  = { "/UnArkWCX/compression/splitArchiveSizeEnum", 0 };
+const tagXMLItemV2< int >               OPT_SPLIT_ARCHIVE_MANUAL                = { "/UnArkWCX/compression/splitArhciveSizeManual", 0 };
+const tagXMLItemV2< bool >              OPT_MULTI_THREAD_SUPPORT                = { "/UnArkWCX/compression/multithreadSupport", true };
+
+// DECOMPRESSION
+const tagXMLItemV2< std::string >       OPT_EXTRACT_CODEPAGE_FILENAME           = { "/UnArkWCX/decompression/codepage/filename", "ANSI" };
 

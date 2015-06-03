@@ -24,12 +24,14 @@ public:
 public slots:
     void                                on_cbxCompressionFormats_currentIndexChanged( int index );
     void                                on_okButton_clicked( bool checked );
+    void                                on_cancelButton_clicked( bool checked );
 
 protected:
 
     virtual void                        closeEvent( QCloseEvent* ev );
 
 private:
+    void                                initGlobalFeatures();
     void                                initFormatFeatures();
     void                                registerCompressionFormats();
 
@@ -37,6 +39,7 @@ private:
 
     void                                loadOpts( ARK_FF arkFileFormat );
 
+    SArkGlobalOpt                       m_arkGlobalOpt;
     TyMapFileFormatToFeatures           m_mapFileFormatToFeatures;
     Ui::UnArkWCX_OptsClass              ui;
 };
